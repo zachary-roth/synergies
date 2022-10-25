@@ -20,14 +20,14 @@ tic
 %--------------------------------------------------------------------------
 
 % 1. Import Data
-
+% point to the folder containing the EMG data
 emg_dir = uigetdir();
 
 tic
 
 cd(emg_dir)
 
-% Get list of EMG files
+% Get a list of EMG files
 emg_files = dir(fullfile(emg_dir, '*.xlsx'));
 emg_files = {emg_files.name}';
 
