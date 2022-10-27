@@ -39,7 +39,7 @@ for file = 1:length(emg_files)
        disp(['File ',num2str(file),' empty'])
         continue
     else
-        emg_data.(['trial' num2str(trial_num)]) = data;
+        emg_raw.(['trial' num2str(trial_num)]) = data;
         disp(['File ',num2str(file),' imported'])
     end
 end
@@ -56,12 +56,12 @@ ftype = 'high'; % Filter type
 [b,a] = butter(n,Wn,ftype);
 
 % HIGH-pass filter EMG data
-trials = fieldnames(emg_data);
+trials = fieldnames(emg_raw);
 for trial = 1:length(trials)
     trial_num = sscanf(trials{trial},strcat("trial","%f"));
     for muscle = 2:17
-        x = table2array(emg_data.(['trial' num2str(trial_num)])(:,muscle));
-        emg_data.(['trial' num2str(trial_num)])(:,muscle) = num2cell(filtfilt(b,a,x));
+        x = table2array(emg_raw.(['trial' num2str(trial_num)])(:,muscle));
+        emg_raw.(['trial' num2str(trial_num)])(:,muscle) = num2cell(filtfilt(b,a,x));
     end
     disp(['Trial',num2str(trial),' high-pass filtered'])
 end
@@ -76,26 +76,49 @@ ftype = 'low'; % Filter type
 [b,a] = butter(n,Wn,ftype);
 
 % LOW-pass filter EMG data
-trials = fieldnames(emg_data);
+trials = fieldnames(emg_raw);
 for trial = 1:length(trials)
     trial_num = sscanf(trials{trial},strcat("trial","%f"));
     for muscle = 2:17
-        x = table2array(emg_data.(['trial' num2str(trial_num)])(:,muscle));
-        emg_data.(['trial' num2str(trial_num)])(:,muscle) = num2cell(filtfilt(b,a,x));
+        x = table2array(emg_raw.(['trial' num2str(trial_num)])(:,muscle));
+        emg_raw.(['trial' num2str(trial_num)])(:,muscle) = num2cell(filtfilt(b,a,x));
     end
     disp(['Trial',num2str(trial_num),' low-pass filtered'])
 end
 
-% Rectify signal
+% Rectify EMG data
 for trial = 1:length(trials)
     trial_num = sscanf(trials{trial},strcat("trial","%f"));
     for muscle = 2:17
-        filt_emg = table2array(emg_data.(['trial' num2str(trial_num)])(:,muscle));
-        emg_data.(['trial' num2str(trial_num)])(:,muscle) = num2cell(abs(filt_emg));
+        filt_emg = table2array(emg_raw.(['trial' num2str(trial_num)])(:,muscle));
+        emg_raw.(['trial' num2str(trial_num)])(:,muscle) = num2cell(abs(filt_emg));
     end
     disp(['Trial',num2str(trial_num),' rectified'])
 end
 
+% Smooth EMG data
+
+
+% Resample EMG data
+proc_cols = {'Percent','RREF','RVAL','RBIF','RMEH','RTIA','RGAS','RSOL','RGLU','LREF','LVAL','LBIF','LMEH','LTIA','LGAS','LSOL','LGLU'};
+
+for trial = 1:length(trials)
+    trial_num = sscanf(trials{trial},strcat("trial","%f"));
+    emg_proc.(['trial' num2str(trial_num)]) = array2table(zeros(101,17), 'VariableNames',proc_cols);
+    emg_proc.(['trial' num2str(trial_num)])(:,1) = num2cell((0:100)');
+    for muscle = 2:17
+        rect_emg = table2array(emg_raw.(['trial' num2str(trial_num)])(:,muscle));
+        % sample values
+        v = table2array(emg_raw.(['trial' num2str(trial_num)])(:,muscle));
+        % sample points
+        x = (1:1:length(rect_emg))';
+        % query point
+        xq = (1:(length(rect_emg)/101):length(rect_emg))';
+        % resample the kinetic data
+        emg_proc.(['trial' num2str(trial_num)])(:,muscle) = num2cell(interp1(x,v,xq));
+    end
+    disp(['Trial',num2str(trial_num),' resampled'])
+end
 
 
 toc
