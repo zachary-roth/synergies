@@ -46,44 +46,36 @@ end
 
 % 2. Filtering
 
-% Create a HIGH-pass 4-order Butterworth Filter
-fc = 10; % cutoff frequency
-fs = 1000; % sampling rate
-n  = 4; % nth-order
-Wn = fc/(fs/2); % Cut off frequency
-ftype = 'high'; % Filter type
+% Remove the 50Hz noise with Notch filter
+fs = 1000;
+fo = 50;  
+q = 35; 
+bw = (fo/(fs/2))/q;
+[b,a] = iircomb(round(fs/fo),bw,'notch');
 
-[b,a] = butter(n,Wn,ftype);
-
-% HIGH-pass filter EMG data
 trials = fieldnames(emg_raw);
 for trial = 1:length(trials)
     trial_num = sscanf(trials{trial},strcat("trial","%f"));
     for muscle = 2:17
-        x = table2array(emg_raw.(['trial' num2str(trial_num)])(:,muscle));
-        emg_raw.(['trial' num2str(trial_num)])(:,muscle) = num2cell(filtfilt(b,a,x));
+        raw_EMG = table2array(emg_raw.(['trial' num2str(trial_num)])(:,muscle));
+        emg_raw.(['trial' num2str(trial_num)])(:,muscle) = num2cell(filter(b,a,raw_EMG));
     end
-    disp(['Trial',num2str(trial),' high-pass filtered'])
+    disp(['Trial',num2str(trial),' notch filtered'])
 end
 
-% Create a LOW-pass 4-order Butterworth Filter
-fc = 50; % cutoff frequency
-fs = 1000; % sampling rate
-n  = 4; % nth-order
-Wn = fc/(fs/2); % Cut off frequency
-ftype = 'low'; % Filter type
+% Bandpass filter (20-400 Hz)
+order = 4; 
+cutoff = [20 400];
+[b, a] = butter(order/2, cutoff/(0.5*fs));
 
-[b,a] = butter(n,Wn,ftype);
-
-% LOW-pass filter EMG data
 trials = fieldnames(emg_raw);
 for trial = 1:length(trials)
     trial_num = sscanf(trials{trial},strcat("trial","%f"));
     for muscle = 2:17
-        x = table2array(emg_raw.(['trial' num2str(trial_num)])(:,muscle));
-        emg_raw.(['trial' num2str(trial_num)])(:,muscle) = num2cell(filtfilt(b,a,x));
+        rawEMG_notch = table2array(emg_raw.(['trial' num2str(trial_num)])(:,muscle));
+        emg_raw.(['trial' num2str(trial_num)])(:,muscle) = num2cell(filtfilt(b,a,rawEMG_notch));
     end
-    disp(['Trial',num2str(trial_num),' low-pass filtered'])
+    disp(['Trial',num2str(trial),' band-pass filtered'])
 end
 
 % Rectify EMG data
@@ -96,7 +88,20 @@ for trial = 1:length(trials)
     disp(['Trial',num2str(trial_num),' rectified'])
 end
 
-% Smooth EMG data
+% Smooth EMG data (15 Hz low pass filter)
+order = 4;
+cutoff = 15;
+[b, a] = butter(order, cutoff/(0.5*fs));
+
+trials = fieldnames(emg_raw);
+for trial = 1:length(trials)
+    trial_num = sscanf(trials{trial},strcat("trial","%f"));
+    for muscle = 2:17
+        rectEMG = table2array(emg_raw.(['trial' num2str(trial_num)])(:,muscle));
+        emg_raw.(['trial' num2str(trial_num)])(:,muscle) = num2cell(filtfilt(b,a,rectEMG));
+    end
+    disp(['Trial',num2str(trial),' smoothed'])
+end
 
 
 % Resample EMG data
