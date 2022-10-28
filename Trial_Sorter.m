@@ -34,6 +34,8 @@ for m = 1:length(movements)
         sub_path = fullfile(meta_path,'Movements',movements{m},data_types{s});
         mkdir(sub_path)
     end
+    fig_path = fullfile(meta_path,'Movements',movements{m},'Figures');
+    mkdir(fig_path)
 end
 
 % Sort the data files into their respective movement and dataype
