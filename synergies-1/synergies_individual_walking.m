@@ -1,3 +1,4 @@
+
 %                                   _            __  
 %                                  (_)          /  | 
 %    ___ _   _ _ __   ___ _ __ __ _ _  ___  ___ `| | 
@@ -45,7 +46,6 @@ for file = 1:length(emg_files)
 end
 
 % 2. Filtering
-
 % Remove the 50Hz noise with Notch filter
 fs = 1000;
 fo = 50;  
@@ -66,7 +66,7 @@ end
 % Bandpass filter (20-400 Hz)
 order = 4; 
 cutoff = [20 400];
-[b, a] = butter(order/2, cutoff/(0.5*fs));
+[b,a] = butter(order/2, cutoff/(0.5*fs));
 
 trials = fieldnames(emg_raw);
 for trial = 1:length(trials)
@@ -103,7 +103,6 @@ for trial = 1:length(trials)
     disp(['Trial',num2str(trial),' smoothed'])
 end
 
-
 % Resample EMG data
 proc_cols = {'Percent','RREF','RVAL','RBIF','RMEH','RTIA','RGAS','RSOL','RGLU','LREF','LVAL','LBIF','LMEH','LTIA','LGAS','LSOL','LGLU'};
 
@@ -125,5 +124,27 @@ for trial = 1:length(trials)
     disp(['Trial',num2str(trial_num),' resampled'])
 end
 
+% Visualize EMG
+
+muscles = {'RREF','RVAL','RBIF','RMEH','RTIA','RGAS','RSOL','RGLU',...
+    'LREF','LVAL','LBIF','LMEH','LTIA','LGAS','LSOL','LGLU'};
+
+t = tiledlayout(2,4);
+
+X = (0:100)';
+
+for muscle = 1:8
+    nexttile
+    for trial = 1:length(trials)
+        trial_num = sscanf(trials{trial},strcat("trial","%f"));
+        hold on
+        Y1 = emg_proc.(['trial' num2str(trial_num)]){:,muscles{muscle}};
+        Y2 = emg_proc.(['trial' num2str(trial_num)]){:,muscles{muscle+8}};
+        plot(X,Y1,'LineWidth',0.5,'Color',[0 1 0 0.5])
+        plot(X,Y2,'LineWidth',0.5,'Color',[1 0 0 0.5])
+    end
+    ylim([0 0.3])
+    hold off
+end
 
 toc
