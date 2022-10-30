@@ -54,6 +54,8 @@ r_knee_col = find(strcmp('knee_angle_r',squats.IK.squat_1.names));
 % Get the column index of the left knee angle
 l_knee_col = find(strcmp('knee_angle_l',squats.IK.squat_1.names));
 
+% Initialize a matrix to store the maximum flexion values (for
+% normalization)
 max_flexion = zeros(length(ik_files),2);
 
 t = tiledlayout('flow');
@@ -119,6 +121,7 @@ end
 
 for f = 1:length(EMG_files)
     i_first = find(squats.EMG.EMG_raw.(strcat('squat_',num2str(f)))(:,2),1,'first');
+    squats.IK.(strcat('squat_',num2str(f))).start_time = squats.EMG.EMG_raw.(strcat('squat_',num2str(f)))(i_first,1);
     i_last = find(squats.EMG.EMG_raw.(strcat('squat_',num2str(f)))(:,1) == squats.IK.(strcat('squat_',num2str(f))).end_time);
     squats.EMG.EMG_trim.(strcat('squat_',num2str(f))) = squats.EMG.EMG_raw.(strcat('squat_',num2str(f)))(i_first:i_last,:);
     disp(['EMG squat_',num2str(f),' trimmed'])
@@ -217,7 +220,6 @@ for f = 1:length(EMG_files)
 end
 
 % Visualize EMG
-
 muscles = squats.EMG.names(2:end);
 t = tiledlayout('flow');
 
@@ -229,22 +231,51 @@ for m = 1:(length(muscles))
         EMG_resamp = squats.EMG.EMG_resamp.(strcat('squat_',num2str(f)));
         hold on
         Y1 = EMG_resamp(:,m+1);
-        %Y2 = EMG_resamp(:,m+9);
         plot(X,Y1,'LineWidth',1)
         title(muscles{m})
     end
     ylim([0 1.1])
-    xlabel('Percent Movement [%]')
-    ylabel('Muscle Activation [%]')
+    %xlabel('Movement Cycle [%]')
+    %ylabel('Muscle Activation [%]')
     grid on
     hold off
 end
 
 t.Title.String = 'Relative Muscle Acivation in the Squat Movement';
 t.Title.FontWeight = 'bold';
+
+t.XLabel.String = 'Movement Cycle [%]';
+t.XLabel.FontSize = 14;
+
+t.YLabel.String = 'Muscle Activation [%]';
+t.YLabel.FontSize = 14;
+
+
 leg = legend('Trial 1','Trial 2','Trial 3','Orientation', 'Horizontal');
 leg.Layout.Tile = 'north';
 
 savefig(fullfile(squat_dir,'Figures','squat_EMG.fig'))
+
+%% EMG Nonnegative matrix factorization
+
+% A (Matrix to factorize)
+
+
+% k (Rank of factors)
+
+%% Calculated Muscle Activations
+
+% % Get a list of ID files
+id_dir = fullfile(squat_dir,'ID');
+id_files = dir(fullfile(id_dir, '*.sto'));
+id_files = {id_files.name}';
+
+% Import the ID files into the squats structure
+for f = 1:length(id_files)
+    squats.ID.(strcat('squat_',num2str(f))) = ReadMotFile(fullfile(squat_dir,'ID',id_files{f}));
+    disp(['ID ',num2str(f),' imported'])
+end
+
+
 
 toc
