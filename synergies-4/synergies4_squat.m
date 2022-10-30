@@ -27,6 +27,7 @@ clc
 % 1. Import Data
 % Select the folder containing the squat data
 squat_dir = uigetdir();
+tic
 cd(squat_dir)
 
 % Get a list of IK files
@@ -178,20 +179,72 @@ for f = 1:length(EMG_files)
     disp(['EMG squat_',num2str(f),' smoothed'])
 end
 
+% Normalize
+squats.EMG.EMG_max = zeros(length(EMG_files),length(squats.EMG.names));
+for f = 1:length(EMG_files)
+    EMG_smooth = squats.EMG.EMG_smooth.(strcat('squat_',num2str(f)));
+    for m = 2:length(squats.EMG.names)
+        squats.EMG.EMG_max(f,m) = max(EMG_smooth(:,m));
+    end
+end
+
+for f = 1:length(EMG_files)
+    squats.EMG.EMG_norm.(strcat('squat_',num2str(f))) = zeros(size(squats.EMG.EMG_smooth.(strcat('squat_',num2str(f)))));
+    squats.EMG.EMG_norm.(strcat('squat_',num2str(f)))(:,1) = squats.EMG.EMG_smooth.(strcat('squat_',num2str(f)))(:,1);
+    for m = 2:length(squats.EMG.names)
+        EMG_smooth = squats.EMG.EMG_smooth.(strcat('squat_',num2str(f)));
+        squats.EMG.EMG_norm.(strcat('squat_',num2str(f)))(:,m) = EMG_smooth(:,m)/max(squats.EMG.EMG_max(:,m));
+    end
+    disp(['EMG squat_',num2str(f),' normalized'])
+end
+
 % Resample
 for f = 1:length(EMG_files)
     squats.EMG.EMG_resamp.(strcat('squat_',num2str(f))) = zeros(101,length(squats.EMG.names));
     squats.EMG.EMG_resamp.(strcat('squat_',num2str(f)))(:,1) = (0:100)';
     for m = 2:length(squats.EMG.names)
-        EMG_smooth = squats.EMG.EMG_smooth.(strcat('squat_',num2str(f)));
+        EMG_norm = squats.EMG.EMG_norm.(strcat('squat_',num2str(f)));
         % sample values
-        v = EMG_smooth(:,m);
+        v = EMG_norm(:,m);
         % sample points
-        x = (1:1:length(EMG_smooth))';
+        x = (1:1:length(EMG_norm))';
         % query point
-        xq = (1:(length(EMG_smooth)/101):length(EMG_smooth))';
+        xq = (1:(length(EMG_norm)/101):length(EMG_norm))';
         % resample the kinetic data
         squats.EMG.EMG_resamp.(strcat('squat_',num2str(f)))(:,m) = interp1(x,v,xq);
     end
     disp(['EMG squat_',num2str(f),' resampled'])
 end
+
+% Visualize EMG
+
+muscles = squats.EMG.names(2:end);
+t = tiledlayout('flow');
+
+X = (0:100)';
+
+for m = 1:(length(muscles))
+    nexttile
+    for f = 1:length(EMG_files)
+        EMG_resamp = squats.EMG.EMG_resamp.(strcat('squat_',num2str(f)));
+        hold on
+        Y1 = EMG_resamp(:,m+1);
+        %Y2 = EMG_resamp(:,m+9);
+        plot(X,Y1,'LineWidth',1)
+        title(muscles{m})
+    end
+    ylim([0 1.1])
+    xlabel('Percent Movement [%]')
+    ylabel('Muscle Activation [%]')
+    grid on
+    hold off
+end
+
+t.Title.String = 'Relative Muscle Acivation in the Squat Movement';
+t.Title.FontWeight = 'bold';
+leg = legend('Trial 1','Trial 2','Trial 3','Orientation', 'Horizontal');
+leg.Layout.Tile = 'north';
+
+savefig(fullfile(squat_dir,'Figures','squat_EMG.fig'))
+
+toc
