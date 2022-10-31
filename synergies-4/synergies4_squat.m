@@ -256,12 +256,17 @@ leg.Layout.Tile = 'north';
 
 savefig(fullfile(squat_dir,'Figures','squat_EMG.fig'))
 
-%% EMG Nonnegative matrix factorization
-
-% A (Matrix to factorize)
-
-
-% k (Rank of factors)
+%% EMG Nonnegative matrix factorization (Right side)
+for f = 1:length(EMG_files)
+    A = squats.EMG.EMG_resamp.(strcat('squat_',num2str(f)))(:,2:9);
+    for s = 1:6
+        k = s;
+        [W,H,D] = nnmf(A,k,"algorithm","als","replicates",10,'Options',statset('Display','final','MaxIter',50))
+        squats.EMG.nnmf.(strcat('squat_',num2str(f))).(strcat('k',num2str(s))).W = W;
+        squats.EMG.nnmf.(strcat('squat_',num2str(f))).(strcat('k',num2str(s))).H = H;
+        squats.EMG.nnmf.D(s) = D;
+    end
+end
 
 %% Calculated Muscle Activations
 
