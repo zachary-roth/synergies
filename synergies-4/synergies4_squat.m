@@ -100,19 +100,7 @@ savefig(fullfile(squat_dir,'Figures','Knee_Flexion.fig'))
 
 %% Process EMG Data
 
-% Import EMG Data
-% Get a list of IK files
-EMG_dir = fullfile(squat_dir,'EMG');
-EMG_files = dir(fullfile(EMG_dir, '*.xlsx'));
-EMG_files = {EMG_files.name}';
-
-% Import the EMG files into the squats structure
-for f = 1:length(EMG_files)
-    data = readtable(fullfile(squat_dir,'EMG',EMG_files{f}));
-    squats.EMG.names = data.Properties.VariableNames;
-    squats.EMG.EMG_raw.(strcat('squat_',num2str(f))) = table2array(data);
-    disp(['EMG ',num2str(f),' imported'])
-end
+ 
 
 % Trim the trials
 % The duration of one squat is defined as the beginning of the trial until
@@ -257,6 +245,8 @@ leg.Layout.Tile = 'north';
 savefig(fullfile(squat_dir,'Figures','squat_EMG.fig'))
 
 %% EMG Nonnegative matrix factorization (Right side)
+
+% NNMF
 for f = 1:length(EMG_files)
     A = squats.EMG.EMG_resamp.(strcat('squat_',num2str(f)))(:,2:9);
     for s = 1:6
@@ -264,9 +254,13 @@ for f = 1:length(EMG_files)
         [W,H,D] = nnmf(A,k,"algorithm","als","replicates",10,'Options',statset('Display','final','MaxIter',50))
         squats.EMG.nnmf.(strcat('squat_',num2str(f))).(strcat('k',num2str(s))).W = W;
         squats.EMG.nnmf.(strcat('squat_',num2str(f))).(strcat('k',num2str(s))).H = H;
+        squats.EMG.nnmf.(strcat('squat_',num2str(f))).(strcat('k',num2str(s))).recon = W*H;
         squats.EMG.nnmf.D(s) = D;
     end
 end
+
+% VAF
+
 
 %% Calculated Muscle Activations
 

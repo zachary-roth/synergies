@@ -22,11 +22,9 @@ tic
 
 % 1. Import Data
 % Point to the folder containing the EMG data
-emg_dir = uigetdir();
-
+walking_dir = uigetdir();
 tic
-
-cd(emg_dir)
+cd(walking_dir)
 
 % Get a list of EMG files
 emg_files = dir(fullfile(emg_dir, '*.xlsx'));
