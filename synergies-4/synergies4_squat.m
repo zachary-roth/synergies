@@ -207,7 +207,7 @@ for f = 1:length(EMG_files)
     disp(['EMG squat_',num2str(f),' resampled'])
 end
 
-% Visualize EMG
+%% Visualize EMG
 muscles = squats.EMG.names(2:end);
 t = tiledlayout('flow');
 
@@ -254,8 +254,8 @@ for f = 1:length(EMG_files)
         [W,H,D] = nnmf(A,k,"algorithm","als","replicates",10,'Options',statset('Display','final','MaxIter',50))
         squats.EMG.nnmf.(strcat('squat_',num2str(f))).(strcat('k',num2str(s))).W = W;
         squats.EMG.nnmf.(strcat('squat_',num2str(f))).(strcat('k',num2str(s))).H = H;
+        squats.EMG.nnmf.(strcat('squat_',num2str(f))).(strcat('k',num2str(s))).D = D;
         squats.EMG.nnmf.(strcat('squat_',num2str(f))).(strcat('k',num2str(s))).recon = W*H;
-        squats.EMG.nnmf.D(s) = D;
     end
 end
 
