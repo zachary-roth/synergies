@@ -169,42 +169,39 @@ for f = 1:length(valid_trials)
         % resample the kinetic data
         gaits.EMG.EMG_resamp.(strcat('gait_',num2str(f)))(:,m) = interp1(x,v,xq);
     end
-    disp(['EMG gait_',num2str(f),' resampled'])
+    disp(['EMG gait',num2str(f),' resampled'])
 end
 
 %% Visualize EMG
-muscles = gaits.EMG.names(2:end);
-t = tiledlayout('flow');
-
 X = (0:100)';
+muscles = gaits.EMG.names(2:end);
 
-for m = 1:(length(muscles))
-    nexttile
-    for f = 1:length(valid_trials)
+for f = 1:length(valid_trials)
+    t = tiledlayout('flow');
+    for m = 1:(length(muscles))
+        nexttile
         EMG_resamp = gaits.EMG.EMG_resamp.(strcat('gait_',num2str(f)));
-        hold on
-        Y1 = EMG_resamp(:,m+1);
-        plot(X,Y1,'LineWidth',1)
+        Y = EMG_resamp(:,m+1) * 100;
+        plot(X,Y,'LineWidth',1)
         title(muscles{m})
+        ylim([0 105])
+        grid on
     end
-    ylim([0 1.1])
-    grid on
-    hold off
+    
+    t.Title.String = 'Relative EMG Activation';
+    t.Title.FontWeight = 'bold';
+
+    subtitle = strcat('Normal Gait-',num2str(f));
+    t.Subtitle.String = subtitle;
+
+    t.XLabel.String = 'Movement Cycle [%]';
+    t.XLabel.FontSize = 14;
+
+    t.YLabel.String = 'Muscle Activation [%]';
+    t.YLabel.FontSize = 14;
+
+    savefig(fullfile(gait_dir,'Figures',strcat('normal_gait_',num2str(f),'_EMG.fig')))
 end
-
-t.Title.String = 'Relative Muscle Acivation During Normal Gait';
-t.Title.FontWeight = 'bold';
-
-t.XLabel.String = 'Movement Cycle [%]';
-t.XLabel.FontSize = 14;
-
-t.YLabel.String = 'Muscle Activation [%]';
-t.YLabel.FontSize = 14;
-
-leg = legend('Trial 1','Trial 2','Trial 3','Orientation', 'Horizontal');
-leg.Layout.Tile = 'north';
-
-savefig(fullfile(gait_dir,'Figures','gait_EMG.fig'))
 
 %% NNMF
 
@@ -240,5 +237,47 @@ for f = 1:length(valid_trials)
     end
 end
 
+%% Import IK Data
 
+% Get a list of IK files
+IK_dir = fullfile(gait_dir,'IK');
+IK_files = dir(fullfile(IK_dir,'*.mot'));
+IK_files = {IK_files.name}';
+
+% Import the IK files into the gaits structure
+i = 1;
+for f = 1:length(IK_files)
+    trial_num = sscanf(IK_files{f},strcat("IK_","%f",".mot"));
+    if ismember(trial_num,valid_trials)
+        Data = ReadMotFile(fullfile(gait_dir,'IK',IK_files{f}));
+        gaits.IK.names = Data.names;
+        gaits.IK.IK_full.(strcat('gait_',num2str(i))) = Data.data;
+        disp(['IK ',num2str(f),' imported'])
+        i = i+1;
+    else
+        disp(['IK ',num2str(f),' skipped (Invalid Trial)'])
+        continue
+    end
+end
+
+% Get a list of ID files
+ID_dir = fullfile(gait_dir,'ID');
+ID_files = dir(fullfile(ID_dir,'*.sto'));
+ID_files = {ID_files.name}';
+
+% Import the ID files into the gaits structure
+i = 1;
+for f = 1:length(ID_files)
+    trial_num = sscanf(ID_files{f},strcat("ID_IK_","%f",".sto"));
+    if ismember(trial_num,valid_trials)
+        Data = ReadMotFile(fullfile(gait_dir,'ID',ID_files{f}));
+        gaits.ID.names = Data.names;
+        gaits.ID.ID_full.(strcat('gait_',num2str(i))) = Data.data;
+        disp(['ID ',num2str(f),' imported'])
+        i = i+1;
+    else
+        disp(['ID ',num2str(f),' skipped (Invalid Trial)'])
+        continue
+    end
+end
 
