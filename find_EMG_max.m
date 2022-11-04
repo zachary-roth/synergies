@@ -8,7 +8,7 @@ clc
 
 % 'Select the folder containing ALL of the EMG trials'
 disp('Select the folder containing all of the EMG trials')
-EMG_dir = uigetdir('Select the folder containing all of the EMG trials');
+EMG_dir = uigetdir('','Select the folder containing all of the EMG trials');
 cd(EMG_dir)
 
 % Get a list of all the EMG files
@@ -44,6 +44,6 @@ MaxValues = array2table(EMG_max.maxValues);
 MaxValues.Properties.VariableNames = names;
 
 disp('Select the folder where you want to save the max values')
-savepath = uigetdir('Select the folder where you want to save the max values');
+savepath = uigetdir('','Select the folder where you want to save the max values');
 filename = fullfile(savepath,'EMG_max.xlsx');
 writetable(MaxValues,filename)
