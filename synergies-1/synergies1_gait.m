@@ -166,7 +166,7 @@ for f = 1:length(valid_trials)
         % sample points
         x = (1:1:length(EMG_norm))';
         % query point
-        xq = (1:(length(EMG_norm)/101):length(EMG_norm))';
+        xq = linspace(1,length(EMG_norm),101);
         % resample the kinetic data
         gaits.EMG.EMG_resamp.(strcat('gait_',num2str(f)))(:,m) = interp1(x,v,xq);
     end
@@ -212,7 +212,7 @@ for f = 1:length(valid_trials)
     A = gaits.EMG.EMG_resamp.(strcat('gait_',num2str(f)))(:,2:9);
     for s = 1:max_n_synergies
         k = s;
-        [W,H,D] = nnmf(A,k,"algorithm","als","replicates",10,'Options',statset('Display','final','MaxIter',50));
+        [W,H,D] = nnmf(A,k,"algorithm","mult","replicates",1000,'Options',statset('Display','final','MaxIter',100));
         gaits.EMG.nnmf.(strcat('gait_',num2str(f))).(strcat('k',num2str(s))).W = W;
         gaits.EMG.nnmf.(strcat('gait_',num2str(f))).(strcat('k',num2str(s))).H = H;
         gaits.EMG.nnmf.(strcat('gait_',num2str(f))).(strcat('k',num2str(s))).D = D;
