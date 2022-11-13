@@ -27,7 +27,7 @@ xlim([0 length(raw)])
 ylim([-0.5 0.5])
 xlabel('Time [ms]')
 ylabel('Muscle Activation [mV]')
-title('Raw EMG')
+title('Raw EMG (Entire Gait Trial)')
 grid on
 hold off
 
@@ -38,7 +38,7 @@ xlim([0 length(trim)])
 ylim([-0.3 0.3])
 xlabel('Time [ms]')
 ylabel('Muscle Activation [mV]')
-title('Trimmed EMG')
+title('Trimmed EMG (One Gait Cycle)')
 grid on
 hold off
 
@@ -93,7 +93,7 @@ xlim([0 length(norm)])
 ylim([0 0.12])
 xlabel('Time [ms]')
 ylabel('Relative Activation [%]')
-title('Lowpass Filter (15 Hz)')
+title('Normalize')
 grid on
 hold off
 
