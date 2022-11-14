@@ -113,7 +113,7 @@ hold on
 plot(concat)
 xlim([0 length(concat)])
 xticks([25 50 75 101 126 151 176 202 226 252 277])
-ylim([0 0.12])
+ylim([0 0.15])
 xlabel('Gait Cycle [%]')
 ylabel('Relative Activation [%]')
 title('Concatenation')

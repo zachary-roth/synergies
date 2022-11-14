@@ -39,7 +39,7 @@ for d = 1:length(dataTypes) % Loop over each data type
         A = GaitData.(dataTypes{d}).(side).concat; % A = the matrix to factorize
 
         for k = 1:max_n_synergies % k = Rank of factors (number of synergies)
-            [W,H,D] = nnmf(A,k,"algorithm","mult","replicates",8192,'Options',statset('Display','final','MaxIter',256,'UseParallel',true));
+            [W,H,D] = nnmf(A,k,"algorithm","als","replicates",10000,'Options',statset('Display','final','MaxIter',128,'UseParallel',true));
 
             VAF = zeros(1,width(A)); % Initialize a VAF output array
             recon = W*H; % Reconstruct the data by multiplying the synergy activations patterns * muscle weightings
