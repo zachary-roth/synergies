@@ -10,5 +10,4 @@ for f = 2:length(EMG_files)
     EMG_all = [EMG_all;trial]; % Vert Cat
 end
 
-EMG_all = abs(EMG_all); % Rectify the EMG data
 EMG_max_all = max(EMG_all); % Find the max activation for each column (muscle)
