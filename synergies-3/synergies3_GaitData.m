@@ -11,7 +11,13 @@ _____/\\\\\\\\\\\\____________________________________
 
 Author: Zach Roth <zachary.roth@student.kuleuven.be>
 Created: 31-October-2022
+
+The only difference between this script and synergies1_GaitData.m is the
+number of muscles included in the full set of calculated activations (41 in
+this script vs 43 in synergies 1)
 %}
+
+
 
 close all
 clear
@@ -309,14 +315,14 @@ for f = 1:length(gait_indices)
     raw = Results.MActivation.genericMRS'; 
 
     % Resample
-    resample = zeros(101,43);
+    resample = zeros(101,41);
     
     % Specifiy the input arguments for the interp1 function
     x = (1:1:length(raw))'; % sample points
     xq = linspace(1,length(raw),101); % query point
     
     % Resample each column
-    for m = 1:43
+    for m = 1:41
         v = raw(:,m); % sample values
         % resample the kinetic data
         resample(:,m) = interp1(x,v,xq);
