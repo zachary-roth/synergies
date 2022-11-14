@@ -55,13 +55,13 @@ GaitData.meta.IC1 = meta.IC1(gait_indices);
 GaitData.meta.IC2 = meta.IC2(gait_indices);
 
 %% EMG
-
 % Get a list of EMG files
 EMG_dir = fullfile(dataDir,'EMG');
 EMG_files = dir(fullfile(EMG_dir, '*.xlsx'));
 EMG_files = {EMG_files.name};
 
 % Find the max EMG activation values across all trials
+disp('Finding Max EMG Values')
 EMG_max_all = find_EMG_max(EMG_dir,EMG_files);
 
 % Get the full list of EMG muscle names
@@ -84,10 +84,12 @@ muscles = [{EMG_muscles_left}, {EMG_muscles_right}];
 li = 1;
 ri = 1;
 
+% Loop over the valid gait trials
 for f = 1:length(gait_indices)
-    
+    % Read the gait side from the meta file
     side = GaitData.meta.side{f};
-    
+    % Assign an s index variable for slicing muscle names and writing to
+    % output structures
     if side == 'L'
         s = 1;
     else
@@ -112,25 +114,31 @@ for f = 1:length(gait_indices)
     end
     
     % Notch filter: Remove the 50Hz noise
+    % Create the notch filter
     fs = 1000;
     fo = 50;
     q = 35;
     bw = (fo/(fs/2))/q;
     [b,a] = iircomb(round(fs/fo),bw,'notch');
     
+    % Initialize an output array
     notch = zeros(size(trim));
     
+    % Filter each column
     for m = 1:length(muscles{s})
         notch(:,m) = filter(b,a,trim(:,m));
     end
 
     % Bandpass filter (20-400 Hz)
+    % Create the bandpass filter
     order = 4;
     cutoff = [20 400];
     [b,a] = butter(order/2, cutoff/(0.5*fs));
-
+    
+    % Intialize an output array
     bandPass = zeros(size(notch));
-
+    
+    % Filter each column
     for m = 1:length(muscles{s})
         bandPass(:,m) = filtfilt(b,a,notch(:,m));
     end
@@ -139,37 +147,44 @@ for f = 1:length(gait_indices)
     rect = abs(bandPass);
 
     % Smoothing (15 Hz low pass filter)
+    % Create the smoothing filter
     order = 4;
     cutoff = 15;
     [b, a] = butter(order, cutoff/(0.5*fs));
-
+    
+    % Initialize an output array
     lowPass = zeros(size(rect));
-
+    
+    % Filter each column
     for m = 1:length(muscles{s})
         lowPass(:,m) = filtfilt(b,a,rect(:,m));
     end
 
     % Normalize
-    
+    % Initialize an output array
     norm = zeros(size(lowPass));
-
+    
+    % Get the correct left or right EMG max values 
     if GaitData.meta.side{f} == 'R'
         EMG_max = EMG_max_all(:,EMG_muscles_right_idx);
     elseif GaitData.meta.side{f} == 'L'
         EMG_max = EMG_max_all(:,EMG_muscles_left_idx);
     end
-
+    
+    % Normalize each column
     for m = 1:length(muscles{s})
         norm(:,m) = lowPass(:,m)/EMG_max(m);
     end
 
-    % Resample 
-    
+    % Resample
+    % Initialize an output array
     resample = zeros(101,length(muscles{s}));
-
+    
+    % Specifiy the input arguments for the interp1 function
     x = (1:1:length(norm))'; % sample points
     xq = linspace(1,length(norm),101); % query point
-
+    
+    % Resample each column
     for m = 1:length(muscles{s})
         v = norm(:,m); % sample values
         % resample the kinetic data
@@ -207,15 +222,19 @@ GaitData.EMG.R.muscles = EMG_muscles_right;
 GaitData.EMG.L.muscles = EMG_muscles_left;
 
 % Concatenate the resampled EMG trials
+% Assign an s index variable for slicing muscle names and writing to output
+% structures
 for s = 1:2
     if s == 1
         side = 'L';
     else
         side = 'R';
     end
-
+    
+    % Get a list of the resampled trials
     fields = fieldnames(GaitData.EMG.(side).resample);
     
+    % Vertically concatenate the trials
     for f = 1:length(fields)
         if f == 1
             concat = GaitData.EMG.(side).resample.(strcat('resample',num2str(f)));
@@ -235,13 +254,15 @@ disp('Select the OpenSim Model')
 model_path = fullfile(dataDir,'Models','GEN_scaled.osim');
 Misc.model_path = model_path;
 
+% Initialize the left and right indices
 li = 1;
 ri = 1;
 
+% Loop over the valid gait trials
 for f = 1:length(gait_indices)
-    
+    % Read the gait side from the meta file
     side = GaitData.meta.side{f};
-    
+    % Assign the OutName variable based on the side of the gait
     if side == 'L'
         OutName = strcat('gait_',num2str(li));
     else
@@ -289,10 +310,12 @@ for f = 1:length(gait_indices)
 
     % Resample
     resample = zeros(101,43);
-
+    
+    % Specifiy the input arguments for the interp1 function
     x = (1:1:length(raw))'; % sample points
     xq = linspace(1,length(raw),101); % query point
-
+    
+    % Resample each column
     for m = 1:43
         v = raw(:,m); % sample values
         % resample the kinetic data
@@ -319,6 +342,8 @@ for f = 1:length(gait_indices)
 end
 
 % Concatenate the resampled Calculated Activations
+% Assign an s index variable for slicing muscle names and writing to output
+% structures
 for s = 1:2
     if s == 1
         side = 'L';
@@ -326,8 +351,10 @@ for s = 1:2
         side = 'R';
     end
 
+    % Get a list of the resampled trials
     fields = fieldnames(GaitData.calc.(side).resample);
-    
+
+    % Vertically concatenate the trials
     for f = 1:length(fields)
         if f == 1
             concat = GaitData.calc.(side).resample.(strcat('resample',num2str(f)));
@@ -347,14 +374,18 @@ reducedMuscles = ["rect_fem_l","vas_lat_l","bifemlh_l","semiten_l","tib_ant_l","
     "rect_fem_r","vas_lat_r","bifemlh_r","semiten_r","tib_ant_r","lat_gas_r","soleus_r","glut_max1_r"];
 
 % Loop over the left and right side
+% Assign an s index variable for slicing muscle names and writing to output
+% structures
 for s = 1:2
     if s == 1
         side = 'L';
     else
         side = 'R';
     end
+
     % Initialize the reduced set array
     calcReduced = zeros(length(GaitData.calc.(side).concat), width(reducedMuscles));
+    
     % Loop over each reduced set muscle
     for m = 1:width(reducedMuscles)
         % Get the full set column that corresponds to the EMG muscle
