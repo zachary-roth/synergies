@@ -313,14 +313,14 @@ for f = 1:length(gait_indices)
     raw = Results.MActivation.genericMRS'; 
 
     % Resample
-    resample = zeros(101,43);
+    resample = zeros(101,width(raw));
     
     % Specifiy the input arguments for the interp1 function
     x = (1:1:length(raw))'; % sample points
     xq = linspace(1,length(raw),101); % query point
     
     % Resample each column
-    for m = 1:43
+    for m = 1:width(raw)
         v = raw(:,m); % sample values
         % resample the kinetic data
         resample(:,m) = interp1(x,v,xq);
