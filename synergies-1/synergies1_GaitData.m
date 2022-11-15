@@ -269,6 +269,10 @@ for f = 1:length(gait_indices)
         OutName = strcat('gait_',num2str(ri));
     end
     
+    % Adjust the Cost Function weights
+    Misc.wTres = 5000;
+    Misc.wVm= 0.001;
+
     % Make an output folder
     OutPath = fullfile(dataDir,'Results','Calculated_Activations',side,OutName);
     mkdir(OutPath)
