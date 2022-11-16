@@ -374,8 +374,8 @@ end
 
 % Hard Code the names of the calc muscles that correspond to the EMG
 % muscles in a side x muscle array
-reducedMuscles = ["rect_fem_l","vas_lat_l","bifemlh_l","semiten_l","tib_ant_l","lat_gas_l","soleus_l","glut_max1_l";
-    "rect_fem_r","vas_lat_r","bifemlh_r","semiten_r","tib_ant_r","lat_gas_r","soleus_r","glut_max1_r"];
+reducedMuscles = ["rect_fem_l","vas_lat_l","bifemlh_l","semiten_l","tib_ant_l","lat_gas_l","soleus_l","glut_med2_l";
+    "rect_fem_r","vas_lat_r","bifemlh_r","semiten_r","tib_ant_r","lat_gas_r","soleus_r","glut_med2_r"];
 
 % Loop over the left and right side
 % Assign an s index variable for slicing muscle names and writing to output
