@@ -270,7 +270,7 @@ for f = 1:length(gait_indices)
     end
     
     % Adjust the Cost Function weights
-    Misc.wTres = 10000;
+    Misc.wTres = 100000;
     Misc.wVm= 0.001;
 
     % Make an output folder
@@ -296,7 +296,7 @@ for f = 1:length(gait_indices)
     end
 
     % Plotter Bool: Boolean to select if you want to plot lots of output information of intermediate steps in the script
-    Misc.PlotBool = true;
+    Misc.PlotBool = false;
 
     % MRS Bool: Select if you want to run the generic muscle redundancy solver
     Misc.MRSBool = 1;

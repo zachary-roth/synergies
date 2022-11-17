@@ -72,18 +72,29 @@ for d = 1:length(dataTypes) % Loop over each data type
         NNMF.(dataTypes{d}).(side).minSynergies = 999;
         % Get the VAF data
         VAF_muscles = NNMF.(dataTypes{d}).(side).VAF_muscles;
+        n_muscles = length(VAF_muscles);
 
         % Check if n synergies meets the 3 critieria listed below. If it
         % does, it become the new min_synergies
         for n = 1:max_n_synergies
-            % Each muscle synergy accounts for > 70% VAF
-            muscle_check = ismember(1,VAF_muscles(n,:) < .7) == 0;
-            % The average VAF for all trials is > 90%
-            trial_check = mean(VAF_muscles(n,:)) > .9;
+            if dataTypes{d} == "EMG" || dataTypes{d} == "calcReduced"
+                % No muscle criteria for EMG data
+                muscle_check = true;
+                % The average VAF for all trials is > 90%
+                trial_check = mean(VAF_muscles(n,:)) > .9;
+                % The number of synergies is less than the previous trial that
+                % satisfied the previous two conditions
+                minSynergies_check = n < NNMF.(dataTypes{d}).(side).minSynergies;
+            else
+            % VAF for n-3 muscle ≥ 75%
+            muscle_check = sum(VAF_muscles(n,:) > .75) >= n_muscles-3;
+            % The average VAF for all trials is ≥ 90%
+            trial_check = mean(VAF_muscles(n,:)) >= .9;
             % The number of synergies is less than the previous trial that
             % satisfied the previous two conditions
             minSynergies_check = n < NNMF.(dataTypes{d}).(side).minSynergies;
-
+            end
+            
             if muscle_check && trial_check && minSynergies_check
                 NNMF.(dataTypes{d}).(side).minSynergies = n;
             else

@@ -32,7 +32,7 @@ for d = 1:length(dataTypes)
         end
     end
 
-    yline(.9,'--','90% VAF','LineWidth',3)
+    yline(.9,'--','LineWidth',3)
     xticks(1:7)
     xlabel('n Synergies')
     ylabel('VAF [%]')
@@ -56,7 +56,7 @@ for d = 1:length(dataTypes)
             end
         end
         yline(.7,'--','LineWidth',3)
-        xlabel(strcat('k = ',num2str(K)))
+        title(strcat('k = ',num2str(K)))
         grid on
         hold off
     end
@@ -88,7 +88,7 @@ for d = 1:length(dataTypes)
         end
     end
 
-    yline(.9,'--','90% VAF','LineWidth',3)
+    yline(.9,'--','LineWidth',3)
     xticks(1:7)
     xlabel('n Synergies')
     ylabel('VAF [%]')
@@ -111,8 +111,9 @@ for d = 1:length(dataTypes)
                 b.FaceColor = [0 0.4470 0.7410]; % Blue
             end
         end
-        yline(.7,'--','LineWidth',3)
-        xlabel(strcat('k = ',num2str(K)))
+        yline(.75,'--','LineWidth',3)
+        ylim([0 1])
+        title(strcat('k = ',num2str(K)))
         grid on
         hold off
     end

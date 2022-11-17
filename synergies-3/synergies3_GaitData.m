@@ -277,7 +277,7 @@ for f = 1:length(gait_indices)
     end
     
     % Adjust the Cost Function weights
-    Misc.wTres = 10000;
+    Misc.wTres = 100000;
     Misc.wVm= 0.001;
 
     % Make an output folder

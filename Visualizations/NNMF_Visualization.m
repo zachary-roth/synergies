@@ -42,8 +42,6 @@ for s = 1:2
             plot(yW)
             xlim([0 100])
             xticks([25 50 75 100])
-            %xline(101,':','Gait 2')
-            %xline(202,':','Gait 3')
             xlabel('Gait Cycle [%]')
             title(strcat('Activation Patterns Synergy:'," ",num2str(k)))
             grid on
@@ -58,7 +56,6 @@ for s = 1:2
             hold on
             bar(X,yH)
             title(strcat('Muscle Weighting Synergy:'," ",num2str(k)))
-            xtickangle(90)
             grid on
             hold off
         end
