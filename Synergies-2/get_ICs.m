@@ -35,7 +35,7 @@ for subj = 1:length(subjects)
         Markers = MarkersFilled;
 
         if meta.side(f) == "both"
-            meta.IC1(f) = 0;
+            meta.IC1(f) = 0.015;
             meta.IC2(f) = length(AnalogSignals)/AnalogFrameRate;
         else
             if meta.side(f) == "R"

@@ -48,7 +48,7 @@ for subj = 1:length(subjects)
 
         EMG = [Time,EMG];
 
-        filename = fullfile(EMG_dir, strcat("EMG",files{f},".xlsx"));
+        filename = fullfile(EMG_dir, strcat("EMG_raw",files{f},".xlsx"));
         writetable(EMG,filename)
         disp(strcat("Created"," ",fullfile(EMG_dir, strcat("EMG",files{f},".xlsx"))))
     end % File Loop
