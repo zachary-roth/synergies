@@ -1,6 +1,19 @@
 
-function [EMG_max_all] = find_EMG_max(EMG_dir,EMG_files)
+function [maxEMG_array,maxEMG_struc] = find_EMG_max(subjDir)
 % Find the maximum Activation values across all trials
+% Inputs
+%
+%
+
+% Outputs
+% maxEMG_array = a 1 x muscle array of the max EMG values 
+% maxEMG_struct = a structure containing the rectified EMG signals for each
+%                 trial
+
+% Get a list of EMG files
+EMG_dir = fullfile(subjDir,'EMG');
+EMG_files = dir(fullfile(EMG_dir, '*.xlsx'));
+EMG_files = {EMG_files.name};
 
 % Loop over the EMG trials
 for f = 1:length(EMG_files)
@@ -11,6 +24,9 @@ for f = 1:length(EMG_files)
         continue
     end
         
+    % Demean
+    demean = raw - mean(raw,1);
+    
     % Notch filter: Remove the 50Hz noise
     % Create the notch filter
     fs = 1000;
@@ -20,11 +36,11 @@ for f = 1:length(EMG_files)
     [b,a] = iircomb(round(fs/fo),bw,'notch');
     
     % Initialize an output array
-    notch = zeros(size(raw));
+    notch = zeros(size(demean));
     
     % Filter each column
-    for m = 1:width(raw)
-        notch(:,m) = filter(b,a,raw(:,m));
+    for musc = 1:width(demean)
+        notch(:,musc) = filter(b,a,demean(:,musc));
     end
 
     % Bandpass filter (20-400 Hz)
@@ -37,13 +53,16 @@ for f = 1:length(EMG_files)
     bandPass = zeros(size(notch));
     
     % Filter each column
-    for m = 1:width(notch)
-        bandPass(:,m) = filtfilt(b,a,notch(:,m));
+    for musc = 1:width(notch)
+        bandPass(:,musc) = filtfilt(b,a,notch(:,musc));
     end
 
     % Rectification
     rect = abs(bandPass);
     
+    trialName = strrep(EMG_files{f},".xlsx","");
+    maxEMG_struc.(trialName) = rect;
+
     % Vertically concatenate all the EMG files into a single array
     if f == 1
         rect_concat = rect;
@@ -52,4 +71,6 @@ for f = 1:length(EMG_files)
     end
 end
 
-EMG_max_all = max(rect_concat);
+maxEMG_array = max(rect_concat);
+
+

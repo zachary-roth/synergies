@@ -21,14 +21,14 @@ left = tiledlayout(length(dataTypes),10);
 for d = 1:length(dataTypes)
     % Total VAF
     nexttile([1 3])
-    for K = 1:7
+    for K = 1:6
         hold on
         Y = NNMF.(dataTypes{d}).L.VAF_trial(K);
         b = bar(K,Y);
         if Y < .9
             b.FaceColor = [0.6350 0.0780 0.1840]; % Red
         else
-            b.FaceColor = [0 0.4470 0.7410];
+            b.FaceColor = [0 0.4470 0.7410]; % Blue
         end
     end
 
@@ -40,9 +40,8 @@ for d = 1:length(dataTypes)
     grid on
     hold off
 
-    % Muscle Synergies 
-    
-    for K = 1:7
+    % Muscle Synergies
+    for K = 1:6
         nexttile
         VAF_muscles = NNMF.(dataTypes{d}).L.VAF_muscles(K,:);
         for m = 1:width(VAF_muscles)
@@ -77,14 +76,14 @@ right = tiledlayout(length(dataTypes),10);
 for d = 1:length(dataTypes)
     % Total VAF
     nexttile([1 3])
-    for K = 1:7
+    for K = 1:6
         hold on
         Y = NNMF.(dataTypes{d}).R.VAF_trial(K);
         b = bar(K,Y);
         if Y < .9
             b.FaceColor = [0.6350 0.0780 0.1840]; % Red
         else
-            b.FaceColor = [0 0.4470 0.7410];
+            b.FaceColor = [0 0.4470 0.7410]; % Blue
         end
     end
 
@@ -96,9 +95,8 @@ for d = 1:length(dataTypes)
     grid on
     hold off
 
-    % Muscle Synergies 
-    
-    for K = 1:7
+    % Muscle Synergies
+    for K = 1:6
         nexttile
         VAF_muscles = NNMF.(dataTypes{d}).R.VAF_muscles(K,:);
         for m = 1:width(VAF_muscles)
