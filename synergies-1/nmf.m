@@ -132,7 +132,7 @@ for subj = 1:length(subjects)
             A = NMF.(subjects{subj}).movements.(movements{move}).data.(dataSources{source});
             for k = 1:6
                 % Non-negative matrix factorization
-                [W,H,D] = nnmf(A,k,"algorithm","als","replicates",1000,'Options',statset('Display','final','MaxIter',1000,'UseParallel',true));
+                [W,H,D] = nnmf(A,k,"algorithm","als","replicates",100,'Options',statset('Display','final','MaxIter',1000,'UseParallel',true));
 
                 % VAF
                 VAF_muscles = zeros(1,width(A)); % Initialize a VAF output array

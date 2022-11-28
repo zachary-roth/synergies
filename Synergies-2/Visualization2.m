@@ -9,7 +9,7 @@ cd(synergiesPath)
 load(fullfile(synergiesPath,"Results","MoveData.mat"))
 load(fullfile(synergiesPath,"Results","NMF.mat"))
 
-% Delete the old Results Folder
+% Delete the old Visualizations Folder
 visDir = fullfile(synergiesPath,"Results","Visualizations");
 if exist(visDir,"dir") == 7
     rmdir(visDir,'s')

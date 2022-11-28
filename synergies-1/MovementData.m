@@ -26,7 +26,6 @@ if exist(resultsDir,"dir") == 7
 end
 
 mkdir(resultsDir)
-mkdir(fullfile(resultsDir,"Figures"))
 
 % Get a list of subjects
 subjects = dir(fullfile(synergiesPath,"CP*"));
@@ -41,7 +40,6 @@ for subj = 1:length(subjects)
     subjResults = fullfile(resultsDir,subjects{subj});
     mkdir(subjResults)
     mkdir(fullfile(subjResults,"Calculated_Activations"))
-    mkdir(fullfile(subjResults,"Figures"))
 
     % Import the meta data
     meta = readtable(fullfile(subjDir,strcat(subjects{subj},'_trials.xlsx')));
