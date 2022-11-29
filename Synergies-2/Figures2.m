@@ -19,7 +19,7 @@ if exist(figDir,"dir") == 7
 end
 mkdir(figDir)
 
-%% Visualize the Number 
+%% Visualize the Number of Trials
 % Trials per Subject
 movements = ["gait_normal_L","gait_normal_R","gait_fast_L","gait_fast_R","s2s","squat","cmj"];
 subjects = fieldnames(MoveData);
@@ -151,7 +151,7 @@ t.YLabel.FontWeight = 'bold';
 filename = fullfile(figDir,"k0_Histograms");
 savefig(filename)
 
-%% Symmetry Plot
+%% Visualize Symmetry
 
 % k0 symetries per subject
 patterns = ["gait_normal","gait_fast","s2s","squat","cmj"];
@@ -169,7 +169,7 @@ for subj = 1:length(subjects)
         yL = k0_arr(subj,Li);
         yR = k0_arr(subj,Ri);
         x = [1; 2];
-        y = [yL;yR]+.05*pat;
+        y = [yL;yR]+.1*pat;
         hold on
         plot(x,y)
     end % Pattern Loop
@@ -242,4 +242,90 @@ t.YLabel.FontSize = 16;
 t.YLabel.FontWeight = 'bold';
 
 filename = fullfile(figDir,"symmetry_move");
+savefig(filename)
+
+%% Visualize k0 (Affected vs Unaffected)
+movements = k0_tbl.Properties.VariableNames(2:end);
+movements_aff = strrep(movements,"_L","_Affected");
+movements_aff = strrep(movements_aff,"_R","_Unaffected");
+
+
+% Hard code a list of movement patterns
+patterns = ["gait_normal","gait_fast","s2s","squat","cmj"];
+
+% Intialize output arrays
+k0_aff_arr = NaN(size(k0_arr));
+k0_sym_arr = NaN(size(k0_arr));
+
+% Create the k0_aff and k0_sym arrays (convert _L, _R -> _Affected,_Unaffected)
+for subj = 1:length(subjects)
+    for pat = 1:length(patterns)
+        % Get L& R Movement Patterns
+        mvmt_LR = movements(contains(movements,patterns(pat)));
+        % Check that there is a k0 fir both sides
+        if length(mvmt_LR) == 1
+            continue
+        end % Both side check
+        
+        % Get the k0 values for each movement
+        k0_mvmt_L = k0_tbl.(mvmt_LR{1})(subj);
+        k0_mvmt_R = k0_tbl.(mvmt_LR{2})(subj);
+        
+        % Determine the affected side
+        if k0_mvmt_L == k0_mvmt_R
+           k0_sym_arr(subj,pat*2-1) = k0_mvmt_L;
+           k0_sym_arr(subj,pat*2) = k0_mvmt_R;
+        elseif k0_mvmt_L < k0_mvmt_R
+            k0_aff_arr(subj,pat*2-1) = k0_mvmt_L;
+            k0_aff_arr(subj,pat*2) = k0_mvmt_R;
+        elseif k0_mvmt_L > k0_mvmt_R
+            k0_aff_arr(subj,pat*2-1) = k0_mvmt_R;
+            k0_aff_arr(subj,pat*2) = k0_mvmt_L;
+        end % Affected Side Loop 
+    end % Patterns Loop
+end % Subj Loop
+
+% Convert the arrays to tables
+subj_tbl = array2table(subjects,"VariableNames","Subject");
+
+k0_aff_tbl = array2table(k0_aff_arr,"VariableNames",movements_aff);
+k0_aff_tbl = [subj_tbl k0_aff_tbl];
+writetable(k0_aff_tbl,fullfile(figDir,"k0_aff.xlsx"))
+
+k0_sym_tbl = array2table(k0_sym_arr,"VariableNames",movements);
+k0_sym_tbl = [subj_tbl k0_sym_tbl];
+writetable(k0_sym_tbl,fullfile(figDir,"k0_sym.xlsx"))
+
+% Visualize K0 (affected/unaffected)
+movements_disp = strrep(movements_aff,"_"," ");
+movements_disp = upper(movements_disp);
+
+t = tiledlayout('flow');
+for move = 1:width(k0_aff_arr)
+    nexttile
+    hold on
+    histogram(k0_aff_arr(:,move))
+    xlim([0 6])
+    xticks(0:6)
+    ylim([0 4])
+    yticks(0:4)
+    title(movements_disp{move})
+    subtitle(strcat("n=",num2str(nnz(~isnan(k0_aff_arr(:,move))))))
+    grid on
+    hold off
+end % Tile Layout 
+
+t.Title.String = "Minimum Synergies per Movement";
+t.Title.FontSize = 20;
+t.Title.FontWeight = 'bold';
+
+t.XLabel.String = "Minimum Synergies Required to Explain 90% VAF";
+t.XLabel.FontSize = 16;
+t.XLabel.FontWeight = 'bold';
+
+t.YLabel.String = "Number of Subjects";
+t.YLabel.FontSize = 16;
+t.YLabel.FontWeight = 'bold';
+
+filename = fullfile(figDir,"k0_aff_Histograms");
 savefig(filename)
