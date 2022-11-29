@@ -116,7 +116,7 @@ end % Subjects Loop
 k0_tbl = array2table(k0_arr,'VariableNames',movements);
 subj_tbl = array2table(subjects,"VariableNames","Subject");
 k0_tbl = [subj_tbl k0_tbl];
-writetable(trial_tbl,fullfile(figDir,"k0.xlsx"))
+writetable(k0_tbl,fullfile(figDir,"k0.xlsx"))
 
 movements_disp = strrep(movements,"_"," ");
 movements_disp = upper(movements_disp);
