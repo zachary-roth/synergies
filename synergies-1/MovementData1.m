@@ -254,81 +254,81 @@ for subj = 1:length(subjects)
         MoveData.(subjects{subj}).movements.(meta.movement{f}).EMG.resample.(meta.trial{f}) = resample;
     end
     
-%     %% Calculated Activations
-%     % Select the OpenSim Model
-%     modelDir = fullfile(subjDir,"Models");
-%     modelFile = dir(fullfile(modelDir,'*.osim')).name;
-%     model_path = fullfile(modelDir, modelFile);
-%     Misc.model_path = model_path;
-%     
-%     for f = 1:height(meta)
-%         if meta.Calc_trial(f) == 0
-%             continue
-%         else
-%             % Check for the output folder
-%             MovementOutPath = fullfile(subjResults,"Calculated_Activations",meta.movement{f});
-%             if exist(MovementOutPath,"dir") == 0
-%                 mkdir(MovementOutPath)
-%             end
-% 
-%             OutPath = fullfile(subjResults,"Calculated_Activations",meta.movement{f},meta.trial{f});
-%             mkdir(OutPath)
-% 
-%             Misc.OutPath = OutPath;
-%             Misc.IKfile = {fullfile(subjDir,'IK',strcat('IK',meta.ID{f},'.mot'))};
-%             Misc.IDfile = {fullfile(subjDir,'ID',strcat('ID_IK',meta.ID{f},'.sto'))};
-% 
-%             % Get start and end time of the different files
-%             % (+50ms beginning and end of time interval, more details see manual and publication)
-%             IC1 = meta.IC1(f);
-%             IC2 = meta.IC2(f);
-%             time = [IC1 IC2];
-%             
-%             if meta.side{f} == 'L'
-%                 Misc.DofNames_Input={'ankle_angle_l','knee_angle_l','hip_flexion_l','hip_adduction_l','hip_rotation_l'};
-%             elseif meta.side{f} == 'R'
-%                 Misc.DofNames_Input={'ankle_angle_r','knee_angle_r','hip_flexion_r','hip_adduction_r','hip_rotation_r'};
-%             elseif meta.side{f} == "both"
-%                 Misc.DofNames_Input={'ankle_angle_l','knee_angle_l','hip_flexion_l','hip_adduction_l','hip_rotation_l','ankle_angle_r','knee_angle_r','hip_flexion_r','hip_adduction_r','hip_rotation_r'};
-%             end
-%             
-%             % Plotter Bool: Boolean to select if you want to plot lots of output information of intermediate steps in the script
-%             Misc.PlotBool = false;
-% 
-%             % MRS Bool: Select if you want to run the generic muscle redundancy solver
-%             Misc.MRSBool = 1;
-% 
-%             % Validation Bool: Select if you want to run the muscle redundancy solver with the optimized parameters
-%             Misc.ValidationBool = 0;
-% 
-%             % name output
-%             Misc.OutName = meta.trial{f};
-% 
-%             % Run muscle tendon estimator:
-%             [Results,DatStore] = solveMuscleRedundancy(time,Misc);
-% 
-%             MRS = Results.MActivation.genericMRS';
-% 
-%             % Resample
-%             resample = zeros(101,width(MRS));
-% 
-%             % Specifiy the input arguments for the interp1 function
-%             x = (1:1:length(MRS))'; % sample points
-%             xq = linspace(1,length(MRS),101); % query point
-% 
-%             % Resample each column
-%             for musc = 1:width(MRS)
-%                 v = MRS(:,musc); % sample values
-%                 % resample the MRS data
-%                 resample(:,musc) = interp1(x,v,xq);
-%             end
-%             
-%             % Store the MRS muscle activations and the resampled data
-%             MoveData.(subjects{subj}).movements.(meta.movement{f}).calc.MRS.(meta.trial{f}) = MRS;
-%             MoveData.(subjects{subj}).movements.(meta.movement{f}).calc.resample.(meta.trial{f}) = resample;
-%             MoveData.Subject1.meta.calc_Muscles.((meta.movement{f})) = Results.MuscleNames;
-%         end
-%     end
+    %% Calculated Activations
+    % Select the OpenSim Model
+    modelDir = fullfile(subjDir,"Models");
+    modelFile = dir(fullfile(modelDir,'*.osim')).name;
+    model_path = fullfile(modelDir, modelFile);
+    Misc.model_path = model_path;
+
+    for f = 1:height(meta)
+        if meta.Calc_trial(f) == 0
+            continue
+        else
+            % Check for the output folder
+            MovementOutPath = fullfile(subjResults,"Calculated_Activations",meta.movement{f});
+            if exist(MovementOutPath,"dir") == 0
+                mkdir(MovementOutPath)
+            end
+
+            OutPath = fullfile(subjResults,"Calculated_Activations",meta.movement{f},meta.trial{f});
+            mkdir(OutPath)
+
+            Misc.OutPath = OutPath;
+            Misc.IKfile = {fullfile(subjDir,'IK',strcat('IK',meta.ID{f},'.mot'))};
+            Misc.IDfile = {fullfile(subjDir,'ID',strcat('ID_IK',meta.ID{f},'.sto'))};
+
+            % Get start and end time of the different files
+            % (+50ms beginning and end of time interval, more details see manual and publication)
+            IC1 = meta.IC1(f);
+            IC2 = meta.IC2(f);
+            time = [IC1 IC2];
+
+            if meta.side{f} == 'L'
+                Misc.DofNames_Input={'ankle_angle_l','knee_angle_l','hip_flexion_l','hip_adduction_l','hip_rotation_l'};
+            elseif meta.side{f} == 'R'
+                Misc.DofNames_Input={'ankle_angle_r','knee_angle_r','hip_flexion_r','hip_adduction_r','hip_rotation_r'};
+            elseif meta.side{f} == "both"
+                Misc.DofNames_Input={'ankle_angle_l','knee_angle_l','hip_flexion_l','hip_adduction_l','hip_rotation_l','ankle_angle_r','knee_angle_r','hip_flexion_r','hip_adduction_r','hip_rotation_r'};
+            end
+
+            % Plotter Bool: Boolean to select if you want to plot lots of output information of intermediate steps in the script
+            Misc.PlotBool = false;
+
+            % MRS Bool: Select if you want to run the generic muscle redundancy solver
+            Misc.MRSBool = 1;
+
+            % Validation Bool: Select if you want to run the muscle redundancy solver with the optimized parameters
+            Misc.ValidationBool = 0;
+
+            % name output
+            Misc.OutName = meta.trial{f};
+
+            % Run muscle tendon estimator:
+            [Results,DatStore] = solveMuscleRedundancy(time,Misc);
+
+            MRS = Results.MActivation.genericMRS';
+
+            % Resample
+            resample = zeros(101,width(MRS));
+
+            % Specifiy the input arguments for the interp1 function
+            x = (1:1:length(MRS))'; % sample points
+            xq = linspace(1,length(MRS),101); % query point
+
+            % Resample each column
+            for musc = 1:width(MRS)
+                v = MRS(:,musc); % sample values
+                % resample the MRS data
+                resample(:,musc) = interp1(x,v,xq);
+            end
+
+            % Store the MRS muscle activations and the resampled data
+            MoveData.(subjects{subj}).movements.(meta.movement{f}).calc.MRS.(meta.trial{f}) = MRS;
+            MoveData.(subjects{subj}).movements.(meta.movement{f}).calc.resample.(meta.trial{f}) = resample;
+            MoveData.Subject1.meta.calc_Muscles.((meta.movement{f})) = Results.MuscleNames;
+        end
+    end
  end
 
 %% Save the GaitData structure

@@ -12,18 +12,6 @@ __/\\\\\_____/\\\__/\\\\____________/\\\\__/\\\\\\\\\\\\\\\_
 
 Author: Zach Roth (zachary.roth@student.kuleuven.be)
 Created on: Nov 22 2022
-
-Inputs: 
-    - MoveData.mat: Structure containing the muscle activations (Processed
-    EMG and Calculated Activations from the Muscle Redundancy Solver)
-Outputs:
-    - NMF.mat: Structure containing - 
-        -data - the reformated activations (L & R for EMG,
-        calculated activations, and reduced activations). The reduced
-        activations are calculated activations which correspond to the EMG
-        muscles, allowing for a 1-1 comparison. 
-        -results -  The NMF results for 1-6 muscle synergies
-        -summary - the synergy selection criteria including VAF, BIC
 %}
 
 close all; clear; clc
@@ -55,10 +43,6 @@ for subj = 1:length(subjects)
     EMG_muscles_right_idx = find(strncmpi('R',EMG_muscles,1));
     EMG_muscles_right = EMG_muscles(EMG_muscles_right_idx);
 
-    % PROVIDE (Hard-coded) a list of the calculated
-    %     reducedMuscles_l = ["rect_fem_l","vas_lat_l","bifemlh_l","semiten_l","tib_ant_l","lat_gas_l","soleus_l","glut_med2_l"];
-    %     reducedMuscles_r =["rect_fem_r","vas_lat_r","bifemlh_r","semiten_r","tib_ant_r","lat_gas_r","soleus_r","glut_med2_r"];
-
     movements = fieldnames(MoveData.(subjects{subj}).movements);
     for move = 1:length(movements)
         % Skip Static, toestanding and unipod movements
@@ -73,31 +57,12 @@ for subj = 1:length(subjects)
             for t = 1:length(trials)
                 % Concatenate the trials
                 concatEMG = vertcat(concatEMG, MoveData.(subjects{subj}).movements.(movements{move}).EMG.resample.(trials{t}));
-                %                 concatCalc = vertcat(concatCalc, MoveData.(subjects{subj}).movements.(movements{move}).calc.resample.(trials{t}));
-
-                %                 % Get a list of calculated muscle names
-                %                 calc_Muscles = MoveData.(subjects{subj}).meta.calc_Muscles.(movements{move});
-                %                 % Get the indices for the reduced set
-                %                 [~, reduced_Muscles_left_idx] = intersect(calc_Muscles,reducedMuscles_l);
-                %                 [~, reduced_Muscles_right_idx] = intersect(calc_Muscles,reducedMuscles_r);
-
                 % Store the Left and Right trials
                 if contains(movements{move},"_L")
                     NMF.(subjects{subj}).movements.(movements{move}).data.EMG = concatEMG;
-                    %NMF.(subjects{subj}).movements.(movements{move}).data.calc = concatCalc;
-                    %NMF.(subjects{subj}).movements.(movements{move}).data.calcReduced = concatCalc(:,reduced_Muscles_left_idx);
                 elseif contains(movements{move},"_R")
                     NMF.(subjects{subj}).movements.(movements{move}).data.EMG = concatEMG;
-                    %NMF.(subjects{subj}).movements.(movements{move}).data.calc = concatCalc;
-                    %NMF.(subjects{subj}).movements.(movements{move}).data.calcReduced = concatCalc(:,reduced_Muscles_right_idx);
                 else
-                    %                     % Get the indices of the Right and Left muscles
-                    %                     calc_Muscles_left_idx = find(endsWith(calc_Muscles,'l'));
-                    %                     calc_Muscles_left = calc_Muscles(calc_Muscles_left_idx);
-                    %
-                    %                     calc_Muscles_right_idx = find(endsWith(calc_Muscles,'r'));
-                    %                     calc_Muscles_right = calc_Muscles(calc_Muscles_right_idx);
-
                     % Create new L/R movement names
                     moveLeft = strcat(movements{move},"_L");
                     moveRight = strcat(movements{move},"_R");
@@ -105,24 +70,15 @@ for subj = 1:length(subjects)
                     % Store the split values in the NMF strucutre
                     NMF.(subjects{subj}).movements.(moveLeft).data.EMG = concatEMG(:,EMG_muscles_left_idx);
                     NMF.(subjects{subj}).movements.(moveRight).data.EMG = concatEMG(:,EMG_muscles_right_idx);
-                    %                     NMF.(subjects{subj}).movements.(moveLeft).data.calc = concatCalc(:,calc_Muscles_left_idx);
-                    %                     NMF.(subjects{subj}).movements.(moveRight).data.calc = concatCalc(:,calc_Muscles_right_idx);
-                    %                     NMF.(subjects{subj}).movements.(moveLeft).data.calcReduced = concatCalc(:,reduced_Muscles_left_idx);
-                    %                     NMF.(subjects{subj}).movements.(moveRight).data.calcReduced = concatCalc(:,reduced_Muscles_right_idx);
                 end
                 NMF.(subjects{subj}).meta.muscleNames.EMG_L = EMG_muscles_left;
-                NMF.(subjects{subj}).meta.muscleNames.EMG_R = EMG_muscles_right;
-                %                     NMF.(subjects{subj}).meta.muscleNames.calc_l = calc_Muscles_left;
-                %                     NMF.(subjects{subj}).meta.muscleNames.calc_r = calc_Muscles_right;
-                %                     NMF.(subjects{subj}).meta.muscleNames.calcReduced_l = reducedMuscles_l;
-                %                     NMF.(subjects{subj}).meta.muscleNames.calcReduced_r = reducedMuscles_r;
-                
+                NMF.(subjects{subj}).meta.muscleNames.EMG_R = EMG_muscles_right;             
             end
         end
     end
 end
 
-%% NMF, VAF, AIC, BIC
+%% NMF, VAF
 for subj = 1:length(subjects)
     movements = fieldnames(NMF.(subjects{subj}).movements);
 
@@ -144,17 +100,6 @@ for subj = 1:length(subjects)
 
                 VAF_overall = mean(VAF_muscles);
 
-                % AIC
-
-                % BIC
-                %                 m = length(A); % n time points
-                %                 n = width(A); % n muscles
-                %                 c = min(sqrt(m),sqrt(n));
-                %
-                %                 BIC1 = log((norm(WH-A,'fro')^2)) + k*((m+n)/m*n) * log(m*n/(m+n));
-                %                 BIC2 = log((norm(WH-A,'fro')^2)) + k*((m+n)/m*n) * log(c^2);
-                %                 BIC3 = log((norm(WH-A,'fro')^2)) + k*((m+n)/m*n) * (log(c^2))/(c^2);
-
                 % Store Results
                 % NMF
                 NMF.(subjects{subj}).movements.(movements{move}).results.(dataSources{source}).(strcat('k',num2str(k))).W = W;
@@ -164,12 +109,6 @@ for subj = 1:length(subjects)
                 % VAF
                 NMF.(subjects{subj}).movements.(movements{move}).summary.(dataSources{source}).VAF_muscles(k,:) = VAF_muscles;
                 NMF.(subjects{subj}).movements.(movements{move}).summary.(dataSources{source}).VAF_overall(k,:) = VAF_overall;
-                % AIC
-
-                % BIC
-                %                 NMF.(subjects{subj}).movements.(movements{move}).summary.(dataSources{source}).BIC(k,1) = BIC1;
-                %                 NMF.(subjects{subj}).movements.(movements{move}).summary.(dataSources{source}).BIC(k,2) = BIC2;
-                %                 NMF.(subjects{subj}).movements.(movements{move}).summary.(dataSources{source}).BIC(k,3) = BIC3;
             end
         end
     end
