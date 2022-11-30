@@ -254,5 +254,3 @@ for subj = 1:length(subjects)
     end % NMF Loop
 end % Subject Loop
 
-
-

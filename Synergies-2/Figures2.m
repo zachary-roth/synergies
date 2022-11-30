@@ -329,3 +329,208 @@ t.YLabel.FontWeight = 'bold';
 
 filename = fullfile(figDir,"k0_aff_Histograms");
 savefig(filename)
+
+%% Normal Gait, Affected Side, 2 Synergies
+
+W_data = [{NMF.CP15.movements.gait_normal_L.results.EMG.k2.W(:,1)},{NMF.CP15.movements.gait_normal_L.results.EMG.k2.W(:,2)};
+          {NMF.CP16.movements.gait_normal_L.results.EMG.k2.W(:,1)},{NMF.CP16.movements.gait_normal_L.results.EMG.k2.W(:,2)};
+           {NMF.CP3.movements.gait_normal_L.results.EMG.k2.W(:,1)}, {NMF.CP3.movements.gait_normal_L.results.EMG.k2.W(:,2)}];
+
+H_data = [{NMF.CP15.movements.gait_normal_L.results.EMG.k2.H(1,:)},{NMF.CP15.movements.gait_normal_L.results.EMG.k2.H(2,:)};
+          {NMF.CP16.movements.gait_normal_L.results.EMG.k2.H(1,:)},{NMF.CP16.movements.gait_normal_L.results.EMG.k2.H(2,:)};
+           {NMF.CP3.movements.gait_normal_L.results.EMG.k2.H(1,:)}, {NMF.CP3.movements.gait_normal_L.results.EMG.k2.H(2,:)}];
+        
+% Muscle Names
+muscles = ["REF","VAL","BIF","MEH","TIA","GAS","SOL","GLU"];
+X = categorical(muscles);
+X = reordercats(X,muscles);
+
+t = tiledlayout(2,2); %Adjust for n Synergies
+
+for k = 1:2 % n Synergies
+    nexttile
+    for subj = 1:height(W_data)
+        yW = W_data{subj,k};
+        hold on
+        plot(yW)
+        xlim([0 100])
+        xticks([25 50 75 100])
+        xlabel('Gait Cycle [%]')
+        xline(60,"","Swing")
+        ylim([0 1.5])
+        title(strcat('Activation Patterns Synergy:'," ",num2str(k)))
+        grid on
+        hold off
+    end
+
+    nexttile
+        hold on
+        yH = vertcat(H_data{:,k})';
+        bar(X,yH)
+        ylim([0 1])
+        title(strcat('Muscle Weighting Synergy:'," ",num2str(k)))
+        grid on
+        hold off
+end
+
+t.Title.String = "Minimum Synergies for Normal Gait, Afffected Side (EMG)";
+t.Title.FontWeight = 'bold';
+t.Title.FontSize = 16;
+
+leg = legend("CP15","CP16","CP3");
+leg.Layout.Tile = 'north';
+leg.Orientation = 'horizontal';
+
+
+filename = "min_synergies_normal_gait_affected_side_EMG";
+filename = fullfile(figDir,filename);
+savefig(filename)
+
+%% Normal Gait, Unaffected Side, 4 Synergies
+
+W_data = [{NMF.CP16.movements.gait_normal_L.results.EMG.k4.W(:,1)},{NMF.CP16.movements.gait_normal_L.results.EMG.k4.W(:,2)},{NMF.CP16.movements.gait_normal_L.results.EMG.k4.W(:,3)},{NMF.CP16.movements.gait_normal_L.results.EMG.k4.W(:,4)};
+           {NMF.CP4.movements.gait_normal_L.results.EMG.k4.W(:,1)}, {NMF.CP4.movements.gait_normal_L.results.EMG.k4.W(:,2)}, {NMF.CP4.movements.gait_normal_L.results.EMG.k4.W(:,3)},{NMF.CP4.movements.gait_normal_L.results.EMG.k4.W(:,4)};
+           {NMF.CP8.movements.gait_normal_L.results.EMG.k4.W(:,3)}, {NMF.CP8.movements.gait_normal_L.results.EMG.k4.W(:,2)}, {NMF.CP8.movements.gait_normal_L.results.EMG.k4.W(:,1)},{NMF.CP8.movements.gait_normal_L.results.EMG.k4.W(:,4)}];
+
+H_data = [{NMF.CP16.movements.gait_normal_L.results.EMG.k4.H(1,:)},{NMF.CP16.movements.gait_normal_L.results.EMG.k4.H(2,:)},{NMF.CP16.movements.gait_normal_L.results.EMG.k4.H(3,:)},{NMF.CP16.movements.gait_normal_L.results.EMG.k4.H(4,:)};
+           {NMF.CP4.movements.gait_normal_L.results.EMG.k4.H(1,:)}, {NMF.CP4.movements.gait_normal_L.results.EMG.k4.H(2,:)}, {NMF.CP4.movements.gait_normal_L.results.EMG.k4.H(3,:)},{NMF.CP4.movements.gait_normal_L.results.EMG.k4.H(4,:)};
+           {NMF.CP8.movements.gait_normal_L.results.EMG.k4.H(3,:)}, {NMF.CP8.movements.gait_normal_L.results.EMG.k4.H(2,:)}, {NMF.CP8.movements.gait_normal_L.results.EMG.k4.H(1,:)},{NMF.CP8.movements.gait_normal_L.results.EMG.k4.H(4,:)}];
+
+t = tiledlayout(4,2); %Adjust for n Synergies
+for k = 1:4 % n Synergies
+    nexttile
+    for subj = 1:height(W_data)
+        yW = W_data{subj,k};
+        hold on
+        plot(yW)
+        xlim([0 100])
+        xticks([25 50 75 100])
+        xlabel('Gait Cycle [%]')
+        xline(60,"","Swing")
+        ylim([0 1])
+        title(strcat('Activation Patterns Synergy:'," ",num2str(k)))
+        grid on
+        hold off
+    end
+
+    nexttile
+        hold on
+        yH = vertcat(H_data{:,k})';
+        bar(X,yH)
+        ylim([0 1])
+        title(strcat('Muscle Weighting Synergy:'," ",num2str(k)))
+        grid on
+        hold off
+end
+
+movementTitle = strrep(movements{move},"_"," ");
+t.Title.String = "Minimum Synergies for Normal Gait, Unafffected Side (EMG)";
+t.Title.FontWeight = 'bold';
+t.Title.FontSize = 16;
+
+leg = legend("CP16","CP4","CP8");
+leg.Layout.Tile = 'north';
+leg.Orientation = 'horizontal';
+
+filename = "min_synergies_normal_gait_unaffected_side_EMG";
+filename = fullfile(figDir,filename);
+savefig(filename)
+
+%% Fast Gait, Affected Side, 2 Synergies
+W_data = [{NMF.CP15.movements.gait_fast_L.results.EMG.k2.W(:,1)},{NMF.CP15.movements.gait_fast_L.results.EMG.k2.W(:,2)};
+           {NMF.CP16.movements.gait_fast_L.results.EMG.k2.W(:,1)}, {NMF.CP16.movements.gait_fast_L.results.EMG.k2.W(:,2)};
+           {NMF.CP3.movements.gait_fast_L.results.EMG.k2.W(:,1)}, {NMF.CP3.movements.gait_fast_L.results.EMG.k2.W(:,2)}];
+
+H_data = [{NMF.CP15.movements.gait_fast_L.results.EMG.k2.H(1,:)},{NMF.CP15.movements.gait_fast_L.results.EMG.k2.H(2,:)};
+           {NMF.CP16.movements.gait_fast_L.results.EMG.k2.H(1,:)}, {NMF.CP16.movements.gait_fast_L.results.EMG.k2.H(2,:)};
+           {NMF.CP3.movements.gait_fast_L.results.EMG.k2.H(1,:)}, {NMF.CP3.movements.gait_fast_L.results.EMG.k2.H(2,:)}];
+
+t = tiledlayout(2,2); %Adjust for n Synergies
+for k = 1:2 % n Synergies
+    nexttile
+    for subj = 1:height(W_data)
+        yW = W_data{subj,k};
+        hold on
+        plot(yW)
+        xlim([0 100])
+        xticks([25 50 75 100])
+        xlabel('Gait Cycle [%]')
+        xline(60,"","Swing")
+        ylim([0 2])
+        title(strcat('Activation Patterns Synergy:'," ",num2str(k)))
+        grid on
+        hold off
+    end
+
+    nexttile
+        hold on
+        yH = vertcat(H_data{:,k})';
+        ylim([0 1])
+        bar(X,yH)
+        title(strcat('Muscle Weighting Synergy:'," ",num2str(k)))
+        grid on
+        hold off
+end
+
+movementTitle = strrep(movements{move},"_"," ");
+t.Title.String = "Minimum Synergies for Fast Gait, Afffected Side (EMG)";
+t.Title.FontWeight = 'bold';
+t.Title.FontSize = 16;
+
+leg = legend("CP15","CP16","CP3");
+leg.Layout.Tile = 'north';
+leg.Orientation = 'horizontal';
+
+filename = "min_synergies_fast_gait_affected_side_EMG";
+filename = fullfile(figDir,filename);
+savefig(filename)
+
+%% Normal Gait, Unaffected Side, 4 Synergies
+W_data = [{NMF.CP16.movements.s2s_L.results.EMG.k3.W(:,2)},{NMF.CP16.movements.s2s_L.results.EMG.k3.W(:,3)},{NMF.CP16.movements.s2s_L.results.EMG.k3.W(:,1)},;
+           {NMF.CP16.movements.s2s_R.results.EMG.k3.W(:,1)}, {NMF.CP16.movements.s2s_R.results.EMG.k3.W(:,2)}, {NMF.CP16.movements.s2s_R.results.EMG.k3.W(:,3)},;
+           {NMF.CP8.movements.s2s_L.results.EMG.k3.W(:,1)}, {NMF.CP8.movements.s2s_L.results.EMG.k3.W(:,3)}, {NMF.CP8.movements.s2s_L.results.EMG.k3.W(:,2)};
+           {NMF.CP8.movements.s2s_R.results.EMG.k3.W(:,2)}, {NMF.CP8.movements.s2s_R.results.EMG.k3.W(:,1)}, {NMF.CP8.movements.s2s_R.results.EMG.k3.W(:,3)},];
+
+H_data = [{NMF.CP16.movements.s2s_L.results.EMG.k3.H(2,:)},{NMF.CP16.movements.s2s_L.results.EMG.k3.H(3,:)},{NMF.CP16.movements.s2s_L.results.EMG.k3.H(1,:)};
+           {NMF.CP16.movements.s2s_R.results.EMG.k3.H(1,:)}, {NMF.CP16.movements.s2s_R.results.EMG.k3.H(2,:)}, {NMF.CP16.movements.s2s_R.results.EMG.k3.H(3,:)};
+           {NMF.CP8.movements.s2s_L.results.EMG.k3.H(1,:)}, {NMF.CP8.movements.s2s_L.results.EMG.k3.H(3,:)}, {NMF.CP8.movements.s2s_L.results.EMG.k3.H(2,:)};
+           {NMF.CP8.movements.s2s_R.results.EMG.k3.H(2,:)}, {NMF.CP8.movements.s2s_R.results.EMG.k3.H(1,:)}, {NMF.CP8.movements.s2s_R.results.EMG.k3.H(3,:)}];
+
+t = tiledlayout(3,2); %Adjust for n Synergies
+for k = 1:3 % n Synergies
+    nexttile
+    for subj = 1:height(W_data)
+        yW = W_data{subj,k};
+        hold on
+        plot(yW)
+        xlim([0 100])
+        xticks([25 50 75 100])
+        xlabel('Movement Cycle [%]')
+        ylim([0 1])
+        title(strcat('Activation Patterns Synergy:'," ",num2str(k)))
+        grid on
+        hold off
+    end
+
+    nexttile
+        hold on
+        yH = vertcat(H_data{:,k})';
+        bar(X,yH)
+        ylim([0 1])
+        title(strcat('Muscle Weighting Synergy:'," ",num2str(k)))
+        grid on
+        hold off
+end
+
+movementTitle = strrep(movements{move},"_"," ");
+t.Title.String = "Minimum Synergies for Sit-to-Stand, No Affected Side (EMG)";
+t.Title.FontWeight = 'bold';
+t.Title.FontSize = 16;
+
+leg = legend("CP16 (L)","CP16 (R)","CP8 (L)","CP8 (R)");
+leg.Layout.Tile = 'north';
+leg.Orientation = 'horizontal';
+
+filename = "min_synergies_s2s_no_affected_side_EMG";
+filename = fullfile(figDir,filename);
+savefig(filename)
