@@ -17,7 +17,7 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
 4. If time allows it, determine the differences between estimated and measured muscle synergies during functional movements (squat, sit-to-stand-to-sit and counter movement jump) in a child with CP.
 
 ## synergies1:  estimated vs measured muscle synergies in 1 participant, **Generic** Musculoskeletal Model
-___
+
 ### Workflow
 
 1. run `MoveData1.m`
@@ -50,7 +50,7 @@ ___
 `Figures1.m` is a hard-coded script to generate the plots used in presentations
 
 ## synergies2:  measured muscle synergies in 7 participants
-___
+
 ### Workflow
 
 1. extract trials meta data from protocol pdf *by hand* (CPx_trials.xlsx)
@@ -69,7 +69,7 @@ ___
 `Figures2.m` is a hard-coded script to generate the plots used in presentations
 
 ## synergies3:  estimated vs measured muscle synergies in 1 participant, **MRI-Based** Musculoskeletal Model
-___
+
 ### Workflow
 
 1. run `MoveData1.m`
