@@ -2,9 +2,9 @@
 
 ## Project abstract
 
-De Groote et al. (2014) showed that solving the muscle redundancy problem by optimizing performance assuming independent recruitment of muscles in healthy adults resulted in muscle activations that on average could be explained by four muscle synergies1 . Those synergies are similar to the ones derived from measured experimentally using EMG.
+De Groote et al. (2014) showed that solving the muscle redundancy problem by optimizing performance assuming independent recruitment of muscles in healthy adults resulted in muscle activations that on average could be explained by four muscle synergies[1](https://www.frontiersin.org/articles/10.3389/fncom.2014.00115/full). Those synergies are similar to the ones derived from measured experimentally using EMG.
 
-Children with Cerebral Palsy (CP) however are known to have reduced motor control and use less synergies during walking2,3 . It is unclear if optimizing performance assuming independent recruitment of muscles to solve the redundancy problem in these children will result in similar synergies measured experimentally.
+Children with Cerebral Palsy (CP) however are known to have reduced motor control and use less synergies during walking[2](https://onlinelibrary.wiley.com/doi/10.1111/dmcn.12826),[3](https://dx.plos.org/10.1371/journal.pone.0228851). It is unclear if optimizing performance assuming independent recruitment of muscles to solve the redundancy problem in these children will result in similar synergies measured experimentally.
 
 ## The goals of this project are:
 
