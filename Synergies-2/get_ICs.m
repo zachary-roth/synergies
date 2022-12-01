@@ -47,7 +47,7 @@ for subj = 1:length(subjects)
             end % Heel Loop
 
             % Find all the possible ICs based on the heel marker data
-            possibleIC_TF = islocalmin(Heel);
+            possibleIC_TF = islocalmin(Heel,"MinProminence",2);
             possibleICs = find(possibleIC_TF);
             possibleIC_heelHeights = Heel(possibleIC_TF);
 
@@ -125,14 +125,14 @@ for subj = 1:length(subjects)
 
             [IC2,IC2_heelHeight] = ginput;
 
-            meta.IC1(f) = round(IC1/100,2);
-            meta.IC2(f) = round(IC2/100,2);
+            %meta.IC1(f) = round(IC1/100,2);
+            %meta.IC2(f) = round(IC2/100,2);
 
             close all
 
         end % Side Loop
     end % File Loop
-    filename = fullfile(synergies2Dir,subjects{subj},strcat(subjects{subj},"_trials.xlsx"));
-    writetable(meta,filename)
+    %filename = fullfile(synergies2Dir,subjects{subj},strcat(subjects{subj},"_trials.xlsx"));
+    %writetable(meta,filename)
 end % Subject Loop
 
