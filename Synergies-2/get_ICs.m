@@ -70,6 +70,13 @@ subjects = dir(fullfile(synergies2Dir,"CP*"));
 subjects = {subjects.name};
 
 for subj = 1:length(subjects)
+    
+    trcDir = fullfile(synergies2Dir,subjects{subj},"TRC");
+    if exist(trcDir,"dir") == 7
+        rmdir(trcDir,'s')
+    end
+    mkdir(trcDir)
+
     % Get the index of the Synergies2 subject from the list of all subjects
     iAll = find(strcmp(subjects{subj},subjectsAll));
 
@@ -82,6 +89,10 @@ for subj = 1:length(subjects)
         c3dfile = fullfile(dataDir,subjects{subj},"Vicon",c3dName);
         [Markers,MLabels,VideoFrameRate,AnalogSignals,ALabels,AUnits,AnalogFrameRate,Event,ParameterGroup,CameraInfo]= readC3D(c3dfile, []);
 
+        % Filter out the extraneous markers
+        lastCol = find(contains(MLabels,"*"),1,'first')*3-3;
+        Markers = Markers(:,1:lastCol);
+        
         % Fill the marker gaps
         MarkersNaN = Markers;
         MarkersNaN(Markers==0)= NaN;
@@ -90,7 +101,7 @@ for subj = 1:length(subjects)
         Markers = MarkersFilled;
 
         if meta.side(f) == "both"
-            meta.IC1(f) = 0.015;
+            meta.IC1(f) = 0;
             meta.IC2(f) = length(AnalogSignals)/AnalogFrameRate;
         else
             if meta.side(f) == "R"
@@ -102,7 +113,7 @@ for subj = 1:length(subjects)
             end % Heel Loop
 
             % Find all the possible ICs based on the heel marker data
-            possibleIC_TF = islocalmin(Heel,"MinProminence",2);
+            possibleIC_TF = islocalmin(Heel,'MinProminence',1);
             possibleICs = find(possibleIC_TF);
             possibleIC_heelHeights = Heel(possibleIC_TF);
 
@@ -116,13 +127,23 @@ for subj = 1:length(subjects)
 
             fp_data = [];
 
+            % Smoothing (15 Hz low pass filter)
+            % Create the smoothing filter
+            order = 4;
+            cutoff = 15;
+            fs = AnalogFrameRate;
+            [b, a] = butter(order, cutoff/(0.5*fs));
+
             for fp = 1:2
                 % Get the GRFy (left or right) col
                 fp_idx = ismember(ALabels, fpNames(fp));
+                GRFy = AnalogSignals(:,fp_idx);
+                % Filter each column
+                GRFy = filtfilt(b,a,GRFy);
 
                 % Resample the GRFy data
                 x = (1:1:length(AnalogSignals))'; % sample points
-                v = AnalogSignals(:,fp_idx);
+                v = GRFy;
                 xq = linspace(1,length(AnalogSignals),length(Markers)); % query point
                 vq = interp1(x,v,xq);
 
@@ -130,7 +151,7 @@ for subj = 1:length(subjects)
                 fp_data(:,fp) = vq;
 
                 IC1 = find(fp_data(:,fp) > threshold, 1, 'first');
-                IC1_heelHeight = Heel(IC1); %
+                IC1_heelHeight = Heel(IC1);
                 [diff_fp,fp_closestIndex] = min(abs(Heel(possibleIC_TF)-IC1_heelHeight));
                 fp_Check(fp,1) = IC1;
                 fp_Check(fp,2) = IC1_heelHeight;
@@ -160,7 +181,7 @@ for subj = 1:length(subjects)
             xlim([0 length(Heel)])
             xlabel('Time')
             ylabel('Heel Marker Height')
-            titleString = (strcat(subjects{subj}," ",meta.movement{f}," ","Trial_",meta.ID{f}));
+            titleString = (strcat(subjects{subj}," ",meta.movement{f}," ",meta.side{f}," ","Side"," ","Trial_",meta.ID{f}));
             titleString = strrep(titleString,"_"," ");
             titleString = upper(titleString);
             title(titleString)
@@ -185,9 +206,21 @@ for subj = 1:length(subjects)
 
             close all
 
+            % Write a trc file
+            Frames = (1:1:length(Markers))';
+            Time = (0:1/VideoFrameRate:((length(Markers)-1)/VideoFrameRate))';
+            Units = 'mm';
+            rot = SelectRotationMatrix('overground_MALL');
+            Markers = rot3DVectors(rot.Markers, Markers);
+            filename = fullfile(trcDir,strcat(subjects{subj},meta.ID{f},".trc"));
+            
+            try
+            writeMarkersToTRC(filename, Markers, MLabels, VideoFrameRate, Frames, Time, Units);
+            catch
+                warning(strcat("Problem writing"," ", subjects{subj},meta.ID{f},".trc.  Continuing to next trial."));
+            end
         end % Side Loop
     end % File Loop
     filename = fullfile(synergies2Dir,subjects{subj},strcat(subjects{subj},"_trials.xlsx"));
     writetable(meta,filename)
 end % Subject Loop
-
