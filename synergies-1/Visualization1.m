@@ -1,9 +1,58 @@
+%{
+__/\\\________/\\\_________________________/\\\_        
+ _\/\\\_______\/\\\_____________________/\\\\\\\_       
+  _\//\\\______/\\\___/\\\______________\/////\\\_      
+   __\//\\\____/\\\___\///___/\\\\\\\\\\_____\/\\\_     
+    ___\//\\\__/\\\_____/\\\_\/\\\//////______\/\\\_    
+     ____\//\\\/\\\_____\/\\\_\/\\\\\\\\\\_____\/\\\_   
+      _____\//\\\\\______\/\\\_\////////\\\_____\/\\\_  
+       ______\//\\\_______\/\\\__/\\\\\\\\\\_____\/\\\_ 
+        _______\///________\///__\//////////______\///_ 
+
+Author: Zach Roth <zachary.roth@student.kuleuven.be>
+
+Synergies1/Synergies3 Workflow:
+    MovementData1.m/MovementData3.m
+    nmf1.m
+  ->Visualization1.m
+
+Description:
+    This script is the final step in the synergies1 and synergies 3
+workflows.
+
+Ensure that the data conforms to the following organization and naming
+conventions:
+    
+    Synergies1 or Synergies3(Dir)
+            Results (Dir created by MovementData1.m or MovementData3.m)
+                MoveData.mat
+                NMF.mat
+
+Inputs:
+    - MoveData.mat: a MATLAB structure containing the metadata and all
+    intermediate processing steps for the muscle activations
+    - NMF.mat: a MATLAB structure containing the metadata (muscle names),
+    synergies (k=1-6), VAF for each synergy, and a k0 summary table.
+
+Outputs:
+    Visualizations: Dir containing: 
+        - EMG Validation Plots: Check for spikes in EMG which may indicate
+        that the filtering was in sufficient or that outliers need to be
+        removed. 
+        - A_vs_WH Plots: Compare the observed activations with the
+        reconstructed activations (using the appropraite k0). 
+        - VAF Plot: Compare the overall VAF and VAF per muscle for each of
+        the 6 computed synergies.
+        - NMF Plots: Visualize the synergy activation patterns (W) and
+        muscle weightings (H), using the appropriate k0.
+%}
+
 close all; clear; clc
 
 %% IMPORT DATA
-% Select the synergies 1,2,3 or 4 data folder
-disp('Select the synergies 1,2,3 or 4 data folder')
-synergiesPath = uigetdir('','Select the synergies 1,2,3 or 4 folder');
+% Select the synergies 1 or 3 data folder
+disp('Select the synergies 1 or 3 data folder')
+synergiesPath = uigetdir('','Select the synergies 1 or 3 data folder');
 cd(synergiesPath)
 
 load(fullfile(synergiesPath,"Results","MoveData.mat"))
@@ -144,11 +193,11 @@ for subj = 1:length(subjects)
 
             % Muscle Names
             if contains(movements{move},"_R")
-                musclesEMG = NMF.(subjects{subj}).meta.muscleNames.EMG_r;
+                musclesEMG = NMF.(subjects{subj}).meta.muscleNames.EMG_R;
                 musclesCalc = NMF.(subjects{subj}).meta.muscleNames.calc_r;
                 musclesCalcReduced = NMF.(subjects{subj}).meta.muscleNames.calcReduced_r;
             elseif contains(movements{move},"_L")
-                musclesEMG = NMF.(subjects{subj}).meta.muscleNames.EMG_l;
+                musclesEMG = NMF.(subjects{subj}).meta.muscleNames.EMG_L;
                 musclesCalc = NMF.(subjects{subj}).meta.muscleNames.calc_l;
                 musclesCalcReduced = NMF.(subjects{subj}).meta.muscleNames.calcReduced_l;
             end
@@ -231,11 +280,11 @@ for subj = 1:length(subjects)
 
             % Muscle Names
             if contains(movements{move},"_R")
-                musclesEMG = NMF.(subjects{subj}).meta.muscleNames.EMG_r;
+                musclesEMG = NMF.(subjects{subj}).meta.muscleNames.EMG_R;
                 musclesCalc = NMF.(subjects{subj}).meta.muscleNames.calc_r;
                 musclesCalcReduced = NMF.(subjects{subj}).meta.muscleNames.calcReduced_r;
             elseif contains(movements{move},"_L")
-                musclesEMG = NMF.(subjects{subj}).meta.muscleNames.EMG_l;
+                musclesEMG = NMF.(subjects{subj}).meta.muscleNames.EMG_L;
                 musclesCalc = NMF.(subjects{subj}).meta.muscleNames.calc_l;
                 musclesCalcReduced = NMF.(subjects{subj}).meta.muscleNames.calcReduced_l;
             end

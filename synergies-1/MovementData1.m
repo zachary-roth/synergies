@@ -1,21 +1,59 @@
 %{
-__/\\\\____________/\\\\_______/\\\\\_______/\\\________/\\\__/\\\\\\\\\\\\\\\_        
- _\/\\\\\\________/\\\\\\_____/\\\///\\\____\/\\\_______\/\\\_\/\\\///////////__       
-  _\/\\\//\\\____/\\\//\\\___/\\\/__\///\\\__\//\\\______/\\\__\/\\\_____________      
-   _\/\\\\///\\\/\\\/_\/\\\__/\\\______\//\\\__\//\\\____/\\\___\/\\\\\\\\\\\_____     
-    _\/\\\__\///\\\/___\/\\\_\/\\\_______\/\\\___\//\\\__/\\\____\/\\\///////______    
-     _\/\\\____\///_____\/\\\_\//\\\______/\\\_____\//\\\/\\\_____\/\\\_____________   
-      _\/\\\_____________\/\\\__\///\\\__/\\\________\//\\\\\______\/\\\_____________  
-       _\/\\\_____________\/\\\____\///\\\\\/__________\//\\\_______\/\\\\\\\\\\\\\\\_ 
-        _\///______________\///_______\/////_____________\///________\///////////////__
+__/\\\\____________/\\\\_________________________________________________/\\\_        
+ _\/\\\\\\________/\\\\\\_____________________________________________/\\\\\\\_       
+  _\/\\\//\\\____/\\\//\\\____________________________________________\/////\\\_      
+   _\/\\\\///\\\/\\\/_\/\\\_____/\\\\\_____/\\\____/\\\_____/\\\\\\\\______\/\\\_     
+    _\/\\\__\///\\\/___\/\\\___/\\\///\\\__\//\\\__/\\\____/\\\/////\\\_____\/\\\_    
+     _\/\\\____\///_____\/\\\__/\\\__\//\\\__\//\\\/\\\____/\\\\\\\\\\\______\/\\\_   
+      _\/\\\_____________\/\\\_\//\\\__/\\\____\//\\\\\____\//\\///////_______\/\\\_  
+       _\/\\\_____________\/\\\__\///\\\\\/______\//\\\______\//\\\\\\\\\\_____\/\\\_ 
+        _\///______________\///_____\/////_________\///________\//////////______\///_ 
+
+Author: Zach Roth <zachary.roth@student.kuleuven.be>
+
+Synergies1 Workflow:
+  ->MovementData1.m
+    nmf1.m
+    Visualization1.m
+
+Description:
+    This script is the first step in the synergies1 workflow. 
+
+Ensure that the data conforms to the following organization and naming
+conventions:
+    
+    Synergies1 (Dir)
+        CP* (Dir for each participant)
+            EMG (Dir containing EMG data)
+                EMG_raw_(trial_ID).xlsx
+            ID (Dir containing ID data)
+                IK_ID_(trial_ID).sto
+            IK
+                IK_(trial_ID).mot
+            Models
+                *.osim
+            CP*_trials.xlsx
+Inputs:
+    - CP*_trials.xlsx: Metadata
+    - EMG Data: folder containing a .xlsx file for each movement trial
+    - IK Data: folder containing a .mot file for each movement trial
+    - ID Data: folder containing a .sto file for each movement trial
+    - OpenSim Model: a generic scaled model
+
+Outputs:
+    - Results: Dir containing:
+        - A folder with the calculated muscle activations from the muscle
+        redundancy solver
+        - MoveData.mat: a MATLAB structure containing the metadata and all
+        intermediate processing steps for the muscle activations
 %}
 
 close all; clear; clc
 
 % IMPORT DATA
-% Select the synergies 1,2,3 or 4 data folder
-disp('Select the synergies 1,2,3 or 4 data folder')
-synergiesPath = uigetdir('','Select the synergies 1,2,3 or 4 folder');
+% Select the synergies1 data folder
+disp('Select the synergies1 data folder')
+synergiesPath = uigetdir('','Select the synergies1');
 cd(synergiesPath)
 
 tic
@@ -326,7 +364,7 @@ for subj = 1:length(subjects)
             % Store the MRS muscle activations and the resampled data
             MoveData.(subjects{subj}).movements.(meta.movement{f}).calc.MRS.(meta.trial{f}) = MRS;
             MoveData.(subjects{subj}).movements.(meta.movement{f}).calc.resample.(meta.trial{f}) = resample;
-            MoveData.Subject1.meta.calc_Muscles.((meta.movement{f})) = Results.MuscleNames;
+            MoveData.(subjects{subj}).meta.calc_Muscles.((meta.movement{f})) = Results.MuscleNames;
         end
     end
  end

@@ -1,26 +1,48 @@
 %{
+__/\\\\\_____/\\\__/\\\\____________/\\\\__/\\\\\\\\\\\\\\\______/\\\_        
+ _\/\\\\\\___\/\\\_\/\\\\\\________/\\\\\\_\/\\\///////////___/\\\\\\\_       
+  _\/\\\/\\\__\/\\\_\/\\\//\\\____/\\\//\\\_\/\\\_____________\/////\\\_      
+   _\/\\\//\\\_\/\\\_\/\\\\///\\\/\\\/_\/\\\_\/\\\\\\\\\\\_________\/\\\_     
+    _\/\\\\//\\\\/\\\_\/\\\__\///\\\/___\/\\\_\/\\\///////__________\/\\\_    
+     _\/\\\_\//\\\/\\\_\/\\\____\///_____\/\\\_\/\\\_________________\/\\\_   
+      _\/\\\__\//\\\\\\_\/\\\_____________\/\\\_\/\\\_________________\/\\\_  
+       _\/\\\___\//\\\\\_\/\\\_____________\/\\\_\/\\\_________________\/\\\_ 
+        _\///_____\/////__\///______________\///__\///__________________\///_ 
 
-__/\\\\\_____/\\\__/\\\\____________/\\\\__/\\\\\\\\\\\\\\\_        
- _\/\\\\\\___\/\\\_\/\\\\\\________/\\\\\\_\/\\\///////////__       
-  _\/\\\/\\\__\/\\\_\/\\\//\\\____/\\\//\\\_\/\\\_____________      
-   _\/\\\//\\\_\/\\\_\/\\\\///\\\/\\\/_\/\\\_\/\\\\\\\\\\\_____     
-    _\/\\\\//\\\\/\\\_\/\\\__\///\\\/___\/\\\_\/\\\///////______    
-     _\/\\\_\//\\\/\\\_\/\\\____\///_____\/\\\_\/\\\_____________   
-      _\/\\\__\//\\\\\\_\/\\\_____________\/\\\_\/\\\_____________  
-       _\/\\\___\//\\\\\_\/\\\_____________\/\\\_\/\\\_____________ 
-        _\///_____\/////__\///______________\///__\///______________
+Author: Zach Roth <zachary.roth@student.kuleuven.be>
 
-Author: Zach Roth (zachary.roth@student.kuleuven.be)
-Created on: Nov 22 2022
+Synergies1/Synergies3 Workflow:
+    MovementData1.m/MovementData3.m
+  ->nmf1.m
+    Visualization1.m
 
+Description:
+    This script is the second step in the synergies1 and synergies 3
+workflows.
+
+Ensure that the data conforms to the following organization and naming
+conventions:
+    
+    Synergies1 or Synergies3(Dir)
+            Results (Dir created by MovementData1.m or MovementData3.m)
+                MoveData.mat
+
+Inputs:
+    - MoveData.mat: a MATLAB structure containing the metadata and all
+    intermediate processing steps for the muscle activations created by
+    MovementData1.m or MovementData3.m
+
+Outputs:
+    - NMF.mat: a MATLAB structure containing the metadata (muscle names), 
+    synergies (k=1-6), VAF for each synergy, and a k0 summary table.
 %}
 
 close all; clear; clc
 
 %% IMPORT DATA
-% Select the synergies 1,2,3 or 4 data folder
-disp('Select the synergies 1,2,3 or 4 data folder')
-synergiesPath = uigetdir('','Select the synergies 1,2,3 or 4 folder');
+% Select the synergies 1 or 3 data folder
+disp('Select the synergies 1 or 3 data folder')
+synergiesPath = uigetdir('','Select the synergies 1 or 3 data folder');
 cd(synergiesPath)
 
 tic % Start the stopwatch timer
@@ -75,10 +97,12 @@ for subj = 1:length(subjects)
                     NMF.(subjects{subj}).movements.(movements{move}).data.EMG = concatEMG;
                     NMF.(subjects{subj}).movements.(movements{move}).data.calc = concatCalc;
                     NMF.(subjects{subj}).movements.(movements{move}).data.calcReduced = concatCalc(:,reduced_Muscles_left_idx);
+
                 elseif contains(movements{move},"_R")
                     NMF.(subjects{subj}).movements.(movements{move}).data.EMG = concatEMG;
                     NMF.(subjects{subj}).movements.(movements{move}).data.calc = concatCalc;
                     NMF.(subjects{subj}).movements.(movements{move}).data.calcReduced = concatCalc(:,reduced_Muscles_right_idx);
+                    
                 else
                     % Get the indices of the Right and Left muscles
                     calc_Muscles_left_idx = find(endsWith(calc_Muscles,'l'));
@@ -98,14 +122,14 @@ for subj = 1:length(subjects)
                     NMF.(subjects{subj}).movements.(moveRight).data.calc = concatCalc(:,calc_Muscles_right_idx);
                     NMF.(subjects{subj}).movements.(moveLeft).data.calcReduced = concatCalc(:,reduced_Muscles_left_idx);
                     NMF.(subjects{subj}).movements.(moveRight).data.calcReduced = concatCalc(:,reduced_Muscles_right_idx);
+
+                    NMF.(subjects{subj}).meta.muscleNames.calc_l = calc_Muscles_left;
+                    NMF.(subjects{subj}).meta.muscleNames.calc_r = calc_Muscles_right;
                 end
                 NMF.(subjects{subj}).meta.muscleNames.EMG_L = EMG_muscles_left;
                 NMF.(subjects{subj}).meta.muscleNames.EMG_R = EMG_muscles_right;
-                NMF.(subjects{subj}).meta.muscleNames.calc_l = calc_Muscles_left;
-                NMF.(subjects{subj}).meta.muscleNames.calc_r = calc_Muscles_right;
                 NMF.(subjects{subj}).meta.muscleNames.calcReduced_l = reducedMuscles_l;
                 NMF.(subjects{subj}).meta.muscleNames.calcReduced_r = reducedMuscles_r;
-                
             end
         end
     end

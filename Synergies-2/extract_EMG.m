@@ -1,3 +1,49 @@
+%{
+__/\\\\\\\\\\\\\\\__/\\\\____________/\\\\_____/\\\\\\\\\\\\_        
+ _\/\\\///////////__\/\\\\\\________/\\\\\\___/\\\//////////__       
+  _\/\\\_____________\/\\\//\\\____/\\\//\\\__/\\\_____________      
+   _\/\\\\\\\\\\\_____\/\\\\///\\\/\\\/_\/\\\_\/\\\____/\\\\\\\_     
+    _\/\\\///////______\/\\\__\///\\\/___\/\\\_\/\\\___\/////\\\_    
+     _\/\\\_____________\/\\\____\///_____\/\\\_\/\\\_______\/\\\_   
+      _\/\\\_____________\/\\\_____________\/\\\_\/\\\_______\/\\\_  
+       _\/\\\\\\\\\\\\\\\_\/\\\_____________\/\\\_\//\\\\\\\\\\\\/__ 
+        _\///////////////__\///______________\///___\////////////____
+
+Author: Zach Roth <zachary.roth@student.kuleuven.be>
+
+Synergies2 Workflow:
+    digitize metadata (by hand)
+  ->extract_EMG.m
+    get_ICs.m
+    MovementData2.m
+    nmf2.m
+    Visualization2.m
+
+Description:
+    This script is the second step in the synergies2 workflow. Ensure that
+    you have already digitized the metadata and created a seperate
+    synergies2 folder containing a folder for each participant with the
+    properly named metadata.
+
+Ensure that the data conforms to the following organization and naming
+conventions:
+    
+    Data (Dir containing )
+        CP* (Dir for EACH Participant)
+            Vicon
+                CP*_T0_(trial_ID).cd3
+            
+    Synergies2        
+        CP*
+            CP*_trials.xlsx
+Inputs:
+    - Metadata: CP*_trials.xlsx
+    - c3d Data: folder containing a .c3d file for each movement trial
+
+Outputs:
+    - EMG: Dir containing a .xlsx file for each movement trial
+%}
+
 close all; clear; clc;
 
 % Select the synergies Data folder

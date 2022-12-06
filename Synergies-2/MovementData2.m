@@ -1,21 +1,52 @@
 %{
-__/\\\\____________/\\\\_______/\\\\\_______/\\\________/\\\__/\\\\\\\\\\\\\\\_        
- _\/\\\\\\________/\\\\\\_____/\\\///\\\____\/\\\_______\/\\\_\/\\\///////////__       
-  _\/\\\//\\\____/\\\//\\\___/\\\/__\///\\\__\//\\\______/\\\__\/\\\_____________      
-   _\/\\\\///\\\/\\\/_\/\\\__/\\\______\//\\\__\//\\\____/\\\___\/\\\\\\\\\\\_____     
-    _\/\\\__\///\\\/___\/\\\_\/\\\_______\/\\\___\//\\\__/\\\____\/\\\///////______    
-     _\/\\\____\///_____\/\\\_\//\\\______/\\\_____\//\\\/\\\_____\/\\\_____________   
-      _\/\\\_____________\/\\\__\///\\\__/\\\________\//\\\\\______\/\\\_____________  
-       _\/\\\_____________\/\\\____\///\\\\\/__________\//\\\_______\/\\\\\\\\\\\\\\\_ 
-        _\///______________\///_______\/////_____________\///________\///////////////__
+__/\\\\____________/\\\\_______________________________________________/\\\\\\\\\_____        
+ _\/\\\\\\________/\\\\\\_____________________________________________/\\\///////\\\___       
+  _\/\\\//\\\____/\\\//\\\____________________________________________\///______\//\\\__      
+   _\/\\\\///\\\/\\\/_\/\\\_____/\\\\\_____/\\\____/\\\_____/\\\\\\\\____________/\\\/___     
+    _\/\\\__\///\\\/___\/\\\___/\\\///\\\__\//\\\__/\\\____/\\\/////\\\________/\\\//_____    
+     _\/\\\____\///_____\/\\\__/\\\__\//\\\__\//\\\/\\\____/\\\\\\\\\\\______/\\\//________   
+      _\/\\\_____________\/\\\_\//\\\__/\\\____\//\\\\\____\//\\///////_____/\\\/___________  
+       _\/\\\_____________\/\\\__\///\\\\\/______\//\\\______\//\\\\\\\\\\__/\\\\\\\\\\\\\\\_ 
+        _\///______________\///_____\/////_________\///________\//////////__\///////////////__
+
+Author: Zach Roth <zachary.roth@student.kuleuven.be>
+
+Synergies2 Workflow:
+    digitize metadata (by hand)
+    extract_EMG.m
+    get_ICs.m
+  ->MovementData2.m
+    nmf2.m
+    Visualization2.m
+
+Description:
+    This script is the fourth step in the synergies2 workflow. It contains 
+only the EMG portions of MovementData1.m
+
+Ensure that the data conforms to the following organization and naming
+conventions:
+    
+    Synergies2 (Dir)
+        CP* (Dir for EACH Participant)
+            EMG (Dir containing EMG data)
+                EMG_raw_(trial_ID).xlsx
+            CP*_trials.xlsx
+Inputs:
+    - Metadata: CP3_trials.xlsx
+    - EMG Data: folder containing a .xlsx file for each movement trial
+
+Outputs:
+    - Results: Dir containing:
+        - MoveData.mat: a MATLAB structure containing the metadata and all
+        intermediate processing steps for the muscle activations
 %}
 
 close all; clear; clc
 
 % IMPORT DATA
-% Select the synergies 1,2,3 or 4 data folder
-disp('Select the synergies 1,2,3 or 4 data folder')
-synergiesPath = uigetdir('','Select the synergies 1,2,3 or 4 folder');
+% Select the synergies2 data folder
+disp('Select the synergies2 data folder')
+synergiesPath = uigetdir('','Select the synergies2 folder');
 cd(synergiesPath)
 
 tic

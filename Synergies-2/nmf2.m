@@ -1,17 +1,44 @@
 %{
+__/\\\\\_____/\\\__/\\\\____________/\\\\__/\\\\\\\\\\\\\\\____/\\\\\\\\\_____        
+ _\/\\\\\\___\/\\\_\/\\\\\\________/\\\\\\_\/\\\///////////___/\\\///////\\\___       
+  _\/\\\/\\\__\/\\\_\/\\\//\\\____/\\\//\\\_\/\\\_____________\///______\//\\\__      
+   _\/\\\//\\\_\/\\\_\/\\\\///\\\/\\\/_\/\\\_\/\\\\\\\\\\\_______________/\\\/___     
+    _\/\\\\//\\\\/\\\_\/\\\__\///\\\/___\/\\\_\/\\\///////_____________/\\\//_____    
+     _\/\\\_\//\\\/\\\_\/\\\____\///_____\/\\\_\/\\\_________________/\\\//________   
+      _\/\\\__\//\\\\\\_\/\\\_____________\/\\\_\/\\\_______________/\\\/___________  
+       _\/\\\___\//\\\\\_\/\\\_____________\/\\\_\/\\\______________/\\\\\\\\\\\\\\\_ 
+        _\///_____\/////__\///______________\///__\///______________\///////////////__
 
-__/\\\\\_____/\\\__/\\\\____________/\\\\__/\\\\\\\\\\\\\\\_        
- _\/\\\\\\___\/\\\_\/\\\\\\________/\\\\\\_\/\\\///////////__       
-  _\/\\\/\\\__\/\\\_\/\\\//\\\____/\\\//\\\_\/\\\_____________      
-   _\/\\\//\\\_\/\\\_\/\\\\///\\\/\\\/_\/\\\_\/\\\\\\\\\\\_____     
-    _\/\\\\//\\\\/\\\_\/\\\__\///\\\/___\/\\\_\/\\\///////______    
-     _\/\\\_\//\\\/\\\_\/\\\____\///_____\/\\\_\/\\\_____________   
-      _\/\\\__\//\\\\\\_\/\\\_____________\/\\\_\/\\\_____________  
-       _\/\\\___\//\\\\\_\/\\\_____________\/\\\_\/\\\_____________ 
-        _\///_____\/////__\///______________\///__\///______________
+Author: Zach Roth <zachary.roth@student.kuleuven.be>
 
-Author: Zach Roth (zachary.roth@student.kuleuven.be)
-Created on: Nov 22 2022
+Synergies2 Workflow:
+    digitize metadata (by hand)
+    extract_EMG.m
+    get_ICs.m
+    MovementData2.m
+  ->nmf2.m
+    Visualization2.m
+
+Description:
+    This script is the fourth step in the synergies2 workflow. It is
+    similar to nmf1, but only processes the EMG data.
+
+Ensure that the data conforms to the following organization and naming
+conventions:
+    
+    Synergies2 (Dir)
+        Results (Dir created by MovementData2.m)
+            MoveData.mat
+
+Inputs:
+    - MoveData.mat: a MATLAB structure containing the metadata and all
+    intermediate processing steps for the muscle activations created by
+    MovementData2.m (EMG only).
+
+Outputs:
+    - NMF.mat: a MATLAB structure containing the metadata (muscle names), 
+    synergies (k=1-6), VAF for each synergy, and a k0 summary table (EMG 
+    only).
 %}
 
 close all; clear; clc

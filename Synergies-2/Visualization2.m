@@ -1,7 +1,59 @@
+%{
+__/\\\________/\\\_______________________/\\\\\\\\\_____        
+ _\/\\\_______\/\\\_____________________/\\\///////\\\___       
+  _\//\\\______/\\\___/\\\______________\///______\//\\\__      
+   __\//\\\____/\\\___\///___/\\\\\\\\\\___________/\\\/___     
+    ___\//\\\__/\\\_____/\\\_\/\\\//////_________/\\\//_____    
+     ____\//\\\/\\\_____\/\\\_\/\\\\\\\\\\_____/\\\//________   
+      _____\//\\\\\______\/\\\_\////////\\\___/\\\/___________  
+       ______\//\\\_______\/\\\__/\\\\\\\\\\__/\\\\\\\\\\\\\\\_ 
+        _______\///________\///__\//////////__\///////////////__
+
+Author: Zach Roth <zachary.roth@student.kuleuven.be>
+
+Synergies2 Workflow:
+    digitize metadata (by hand)
+    extract_EMG.m
+    get_ICs.m
+    MovementData2.m
+    nmf2.m
+  ->Visualization2.m
+
+Description:
+    This script is the final step in the synergies2 workflow. It is
+    similar to Visualization1, but only processes the EMG data.
+
+Ensure that the data conforms to the following organization and naming
+conventions:
+    
+    Synergies2 (Dir)
+            Results (Dir created by MovementData2.m)
+                MoveData.mat
+                NMF.mat
+
+Inputs:
+    - MoveData.mat: a MATLAB structure containing the metadata and all
+        intermediate processing steps for the muscle activations
+    - NMF.mat: a MATLAB structure containing the metadata (muscle names), 
+    synergies (k=1-6), VAF for each synergy, and a k0 summary table.
+
+Outputs:
+    Visualization: Dir containing: 
+        - EMG Validation Plots: Check for spikes in EMG which may indicate
+        that the filtering was in sufficient or that outliers need to be
+        removed.
+        - A_vs_WH Plots: Compare the observed activations with the
+        reconstructed activations (using the appropraite k0, EMG only).
+        - VAF Plot: Compare the overall VAF and VAF per muscle for each of
+        the 6 computed synergies (EMG only).
+        - NMF Plots: Visualize the synergy activation patterns (W) and
+        muscle weightings (H), using the appropriate k0 (EMG only).
+%}
+
 close all; clear; clc
 
 %% IMPORT DATA
-% Select the synergies 1,2,3 or 4 data folder
+% Select the synergies2 data folder
 disp('Select the synergies 2 data folder')
 synergiesPath = uigetdir('','Select the synergies 2 folder');
 cd(synergiesPath)

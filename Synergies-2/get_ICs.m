@@ -1,3 +1,58 @@
+%{
+__/\\\\\\\\\\\________/\\\\\\\\\_        
+ _\/////\\\///______/\\\////////__       
+  _____\/\\\_______/\\\/___________      
+   _____\/\\\______/\\\_____________     
+    _____\/\\\_____\/\\\_____________    
+     _____\/\\\_____\//\\\____________   
+      _____\/\\\______\///\\\__________  
+       __/\\\\\\\\\\\____\////\\\\\\\\\_ 
+        _\///////////________\/////////__
+
+Author: Zach Roth <zachary.roth@student.kuleuven.be>
+
+Synergies2 Workflow:
+    digitize metadata (by hand)
+    extract_EMG.m
+  ->get_ICs.m
+    MovementData2.m
+    nmf2.m
+    Visualization2.m
+
+Description:
+    This script is the third step in the synergies2 workflow. Ensure that
+    you have already digitized the metadata and created a seperate
+    synergies2 folder containing a folder for each participant with the
+    properly named metadata. To use the GUI - RIGHT CLICK on the vertical
+    heel marker displacement plot that best corresponds to IC1 (marked with
+    a triangle), then press ENTER.
+
+Ensure that the data conforms to the following organization and naming
+conventions:
+    
+    Data (Dir containing )
+        CP* (Dir for EACH Participant)
+            Vicon
+                CP*_T0_(trial_ID).cd3
+            
+    Synergies2        
+        CP*
+            CP*_trials.xlsx
+Inputs:
+    - Metadata: CP*_trials.xlsx
+    - c3d Data: folder containing a .c3d file for each movement trial
+
+Outputs:
+    - IC1: First heelstrike, determined using forceplate data. Written
+    directly to the metadata file.
+    - IC2: Second heelstrike, determined using the GUI (informed by
+    vertical heel marker displacement). Written directly to the metadata
+    file.
+    - TRC: Dir containing a .trc file for each movement trial. This data
+    can be used to visually verify IC2 in OpenSim (File->Preview
+    Experimental Data)
+%}
+
 close all; clear; clc;
 
 % Select the synergies Data folder
@@ -125,14 +180,14 @@ for subj = 1:length(subjects)
 
             [IC2,IC2_heelHeight] = ginput;
 
-            %meta.IC1(f) = round(IC1/100,2);
-            %meta.IC2(f) = round(IC2/100,2);
+            meta.IC1(f) = round(IC1/100,2);
+            meta.IC2(f) = round(IC2/100,2);
 
             close all
 
         end % Side Loop
     end % File Loop
-    %filename = fullfile(synergies2Dir,subjects{subj},strcat(subjects{subj},"_trials.xlsx"));
-    %writetable(meta,filename)
+    filename = fullfile(synergies2Dir,subjects{subj},strcat(subjects{subj},"_trials.xlsx"));
+    writetable(meta,filename)
 end % Subject Loop
 

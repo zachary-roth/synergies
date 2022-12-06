@@ -67,10 +67,13 @@ t.Title.FontSize = 16;
 t.Title.FontWeight = 'bold';
 
 t.XLabel.String = "Subjects";
-t.XLabel.FontSize = 16;
+t.XLabel.FontSize = 20;
 
 t.YLabel.String = "Number of Trials";
-t.YLabel.FontSize = 16;
+t.YLabel.FontSize = 20;
+
+t.TileSpacing = "compact";
+t.Padding = "tight";
 
 filename = fullfile(figDir,"trials_per_subject");
 savefig(filename)
@@ -90,6 +93,9 @@ legend(subjects)
 grid on
 grid minor
 hold off
+
+t.TileSpacing = "compact";
+t.Padding = "tight";
 
 filename = fullfile(figDir,"trials_overall");
 savefig(filename)
@@ -137,16 +143,19 @@ for move = 1:width(k0_arr)
 end % Tile Layout 
 
 t.Title.String = "Minimum Synergies per Movement";
-t.Title.FontSize = 20;
+t.Title.FontSize = 24;
 t.Title.FontWeight = 'bold';
 
 t.XLabel.String = "Minimum Synergies Required to Explain 90% VAF";
-t.XLabel.FontSize = 16;
+t.XLabel.FontSize = 20;
 t.XLabel.FontWeight = 'bold';
 
 t.YLabel.String = "Number of Subjects";
-t.YLabel.FontSize = 16;
+t.YLabel.FontSize = 20;
 t.YLabel.FontWeight = 'bold';
+
+t.TileSpacing = "compact";
+t.Padding = "tight";
 
 filename = fullfile(figDir,"k0_Histograms");
 savefig(filename)
@@ -168,17 +177,18 @@ for subj = 1:length(subjects)
         Ri = find(contains(movements,patterns{pat}),1,"last");
         yL = k0_arr(subj,Li);
         yR = k0_arr(subj,Ri);
-        x = [1; 2];
-        y = [yL;yR]+.1*pat;
+        x = [1;2]; %Jitter
+        y = [yL;yR]+.025*pat-.075;
         hold on
         plot(x,y)
     end % Pattern Loop
     xlim([.75 2.25])
     xticks(1:2)
     xticklabels(["k0 Left", "k0 Right"])
-    ylim([0 6])
-    yticks([])
+    ylim([0 6.5])
+    yticks(0:6)
     title(subjects{subj})
+    grid on
     hold off
 end % Subject Loop
 
@@ -187,15 +197,15 @@ leg.Layout.Tile = 'north';
 leg.Orientation = 'horizontal';
 
 t.Title.String = "Left/Right Synergy Symmetries per Subject";
-t.Title.FontSize = 20;
+t.Title.FontSize = 24;
 t.Title.FontWeight = 'bold';
 
 t.XLabel.String = "Movements (Left and Right Legs)";
-t.XLabel.FontSize = 16;
+t.XLabel.FontSize = 20;
 t.XLabel.FontWeight = 'bold';
 
 t.YLabel.String = "Min Synergies";
-t.YLabel.FontSize = 16;
+t.YLabel.FontSize = 20;
 t.YLabel.FontWeight = 'bold';
 
 filename = fullfile(figDir,"symmetry_subj");
@@ -230,16 +240,19 @@ leg.Layout.Tile = 'north';
 leg.Orientation = 'horizontal';
 
 t.Title.String = "Left/Right Synergy Symmetries per Movement";
-t.Title.FontSize = 20;
+t.Title.FontSize = 24;
 t.Title.FontWeight = 'bold';
 
 t.XLabel.String = "Movements (Left and Right Legs)";
-t.XLabel.FontSize = 16;
+t.XLabel.FontSize = 20;
 t.XLabel.FontWeight = 'bold';
 
 t.YLabel.String = "Min Synergies";
-t.YLabel.FontSize = 16;
+t.YLabel.FontSize = 20;
 t.YLabel.FontWeight = 'bold';
+
+t.TileSpacing = "compact";
+t.Padding = "tight";
 
 filename = fullfile(figDir,"symmetry_move");
 savefig(filename)
@@ -316,16 +329,19 @@ for move = 1:width(k0_aff_arr)
 end % Tile Layout 
 
 t.Title.String = "Minimum Synergies per Movement";
-t.Title.FontSize = 20;
+t.Title.FontSize = 24;
 t.Title.FontWeight = 'bold';
 
 t.XLabel.String = "Minimum Synergies Required to Explain 90% VAF";
-t.XLabel.FontSize = 16;
+t.XLabel.FontSize = 20;
 t.XLabel.FontWeight = 'bold';
 
 t.YLabel.String = "Number of Subjects";
-t.YLabel.FontSize = 16;
+t.YLabel.FontSize = 20;
 t.YLabel.FontWeight = 'bold';
+
+t.TileSpacing = "compact";
+t.Padding = "tight";
 
 filename = fullfile(figDir,"k0_aff_Histograms");
 savefig(filename)
@@ -375,12 +391,14 @@ end
 
 t.Title.String = "Minimum Synergies for Normal Gait, Afffected Side (EMG)";
 t.Title.FontWeight = 'bold';
-t.Title.FontSize = 16;
+t.Title.FontSize = 24;
 
 leg = legend("CP15","CP16","CP3");
 leg.Layout.Tile = 'north';
 leg.Orientation = 'horizontal';
 
+t.TileSpacing = "compact";
+t.Padding = "tight";
 
 filename = "min_synergies_normal_gait_affected_side_EMG";
 filename = fullfile(figDir,filename);
@@ -426,11 +444,14 @@ end
 movementTitle = strrep(movements{move},"_"," ");
 t.Title.String = "Minimum Synergies for Normal Gait, Unafffected Side (EMG)";
 t.Title.FontWeight = 'bold';
-t.Title.FontSize = 16;
+t.Title.FontSize = 24;
 
 leg = legend("CP16","CP4","CP8");
 leg.Layout.Tile = 'north';
 leg.Orientation = 'horizontal';
+
+t.TileSpacing = "compact";
+t.Padding = "tight";
 
 filename = "min_synergies_normal_gait_unaffected_side_EMG";
 filename = fullfile(figDir,filename);
@@ -475,11 +496,14 @@ end
 movementTitle = strrep(movements{move},"_"," ");
 t.Title.String = "Minimum Synergies for Fast Gait, Afffected Side (EMG)";
 t.Title.FontWeight = 'bold';
-t.Title.FontSize = 16;
+t.Title.FontSize = 24;
 
 leg = legend("CP15","CP16","CP3");
 leg.Layout.Tile = 'north';
 leg.Orientation = 'horizontal';
+
+t.TileSpacing = "compact";
+t.Padding = "tight";
 
 filename = "min_synergies_fast_gait_affected_side_EMG";
 filename = fullfile(figDir,filename);
@@ -525,11 +549,14 @@ end
 movementTitle = strrep(movements{move},"_"," ");
 t.Title.String = "Minimum Synergies for Sit-to-Stand, No Affected Side (EMG)";
 t.Title.FontWeight = 'bold';
-t.Title.FontSize = 16;
+t.Title.FontSize = 24;
 
 leg = legend("CP16 (L)","CP16 (R)","CP8 (L)","CP8 (R)");
 leg.Layout.Tile = 'north';
 leg.Orientation = 'horizontal';
+
+t.TileSpacing = "compact";
+t.Padding = "tight";
 
 filename = "min_synergies_s2s_no_affected_side_EMG";
 filename = fullfile(figDir,filename);
