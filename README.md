@@ -18,6 +18,8 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
 
 ## synergies1:  estimated vs measured muscle synergies in 1 participant, **Generic** Musculoskeletal Model
 
+![synergies1_dataflow](https://user-images.githubusercontent.com/100157598/205997996-06761aaf-58ca-4c12-9807-32a8e63bf67a.svg)
+
 ### Workflow
 
 1. run `MoveData1.m`
@@ -51,6 +53,8 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
 
 ## synergies2:  measured muscle synergies in 7 participants
 
+![synergies2_dataflow](https://user-images.githubusercontent.com/100157598/205997355-8e844117-61b6-464f-b9a3-7a54f4f486da.svg)
+
 ### Workflow
 
 1. extract trials meta data from protocol pdf *by hand* (CPx_trials.xlsx)
@@ -64,11 +68,13 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
   - identical to `MoveData1.m` but with MRS sections removed
 5. run `nmf2.m`
  - identical to `nmf1.m` but with `calcReduced` sections removed
-6. run `Visualizations1.m`
+6. run `Visualizations2.m`
 
 `Figures2.m` is a hard-coded script to generate the plots used in presentations
 
 ## synergies3:  estimated vs measured muscle synergies in 1 participant, **MRI-Based** Musculoskeletal Model
+
+![synergies3_dataflow](https://user-images.githubusercontent.com/100157598/205998362-9270c361-3e57-4932-b9c8-85ed06f741f9.svg)
 
 ### Workflow
 
