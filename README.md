@@ -78,7 +78,7 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
 
 ### Workflow
 
-1. run `MoveData1.m`
+1. run `MoveData3.m`
   - Select the MRI-based model
 2. run `nmf1.m`
 3. run `Visualizations1.m`
