@@ -43,7 +43,7 @@ for m = 1:8
 
     xline(60,"","Swing","LabelOrientation","horizontal")
 
-    ylim([0 1])
+    %ylim([0 1])
 
     title(plot_titles(m))
     grid on
@@ -107,7 +107,7 @@ for m = 1:8
 
     xline(60,"","Swing","LabelOrientation","horizontal")
 
-    ylim([0 1])
+    %ylim([0 1])
 
     title(plot_titles(m))
     grid on

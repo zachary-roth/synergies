@@ -485,7 +485,7 @@ filename = "min_synergies_fast_gait_affected_side_EMG";
 filename = fullfile(figDir,filename);
 savefig(filename)
 
-%% Sit to Stand, Unaffected Side, 3 Synergies
+%% Sit to Stand, Unaffected Side, 4 Synergies
 W_data = [{NMF.CP16.movements.s2s_L.results.EMG.k3.W(:,2)},{NMF.CP16.movements.s2s_L.results.EMG.k3.W(:,3)},{NMF.CP16.movements.s2s_L.results.EMG.k3.W(:,1)},;
            {NMF.CP16.movements.s2s_R.results.EMG.k3.W(:,1)}, {NMF.CP16.movements.s2s_R.results.EMG.k3.W(:,2)}, {NMF.CP16.movements.s2s_R.results.EMG.k3.W(:,3)},;
            {NMF.CP8.movements.s2s_L.results.EMG.k3.W(:,1)}, {NMF.CP8.movements.s2s_L.results.EMG.k3.W(:,3)}, {NMF.CP8.movements.s2s_L.results.EMG.k3.W(:,2)};
@@ -526,13 +526,11 @@ movementTitle = strrep(movements{move},"_"," ");
 t.Title.String = "Minimum Synergies for Sit-to-Stand, Affected Side (EMG)";
 t.Title.FontWeight = 'bold';
 t.Title.FontSize = 16;
-t.TileSpacing = "tight";
-t.Padding = "tight";
 
 leg = legend("CP16 (L)","CP16 (R)","CP8 (L)","CP8 (R)");
 leg.Layout.Tile = 'north';
 leg.Orientation = 'horizontal';
 
-filename = "min_synergies_s2s_affected_side_EMG";
+filename = "min_synergies_s2s_no_affected_side_EMG";
 filename = fullfile(figDir,filename);
 savefig(filename)
