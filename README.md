@@ -18,11 +18,11 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
 
 ## synergies1:  estimated vs measured muscle synergies in 1 participant, **Generic** Musculoskeletal Model
 
-![synergies1_dataflow](https://user-images.githubusercontent.com/100157598/205997996-06761aaf-58ca-4c12-9807-32a8e63bf67a.svg)
+![synergies-diagrams-synergies1](https://user-images.githubusercontent.com/100157598/206788074-74c0ff2b-7f1d-40aa-a6e7-06472c345603.svg)
 
 ### Workflow
 
-1. run `MoveData1.m`
+1. run `MovementData1.m`
   - process EMG data
       - trim trials based on ICs
       - demean
@@ -35,7 +35,7 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
       - resample to 0-100% of movement trial
   - find the calculated muscle activations using the [Muscle Redundancy Solver](https://github.com/KULeuvenNeuromechanics/MuscleRedundancySolver)
   - resample to 0-100% of movement trial
-  - write the resampled data for all subjects to the `MoveData.m` structure, which contains the meta data and EMG data for all subjects
+  - write the resampled data for all subjects to the `MovementData.m` structure, which contains the meta data and EMG data for all subjects
 2. run `nmf1.m`
   - concatenate the resampled movement data into one trial per movement
   - create a `calcReduced` dataset which contains only the calculated activations corresponding to the observed activations
@@ -53,7 +53,7 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
 
 ## synergies2:  measured muscle synergies in 7 participants
 
-![synergies2_dataflow](https://user-images.githubusercontent.com/100157598/205997355-8e844117-61b6-464f-b9a3-7a54f4f486da.svg)
+![synergies-diagrams-synergies2](https://user-images.githubusercontent.com/100157598/206788121-425c0570-e53f-4833-a11a-66712d2b6819.svg)
 
 ### Workflow
 
@@ -64,8 +64,8 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
   - automatically extract the first intital contact (IC1) of gait trials
   - extract IC2 using a GUI based on heel marker data
   - extract marker trajectories (.trc file) to double check heel strike estimate
-4. run `MoveData2.m`
-  - identical to `MoveData1.m` but with MRS sections removed
+4. run `MovementData2.m`
+  - identical to `MovementData1.m` but with MRS sections removed
 5. run `nmf2.m`
  - identical to `nmf1.m` but with `calcReduced` sections removed
 6. run `Visualizations2.m`
@@ -74,11 +74,11 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
 
 ## synergies3:  estimated vs measured muscle synergies in 1 participant, **MRI-Based** Musculoskeletal Model
 
-![synergies3_dataflow](https://user-images.githubusercontent.com/100157598/205998362-9270c361-3e57-4932-b9c8-85ed06f741f9.svg)
+![synergies-diagrams-synergies3](https://user-images.githubusercontent.com/100157598/206788148-e3c61f75-efc0-4b3f-802f-5239928101c5.svg)
 
 ### Workflow
 
-1. run `MoveData3.m`
+1. run `MovementData3.m`
   - Select the MRI-based model
 2. run `nmf1.m`
 3. run `Visualizations1.m`
