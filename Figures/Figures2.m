@@ -177,8 +177,8 @@ for subj = 1:length(subjects)
     xticks(1:2)
     xticklabels(["k0 Left", "k0 Right"])
     ylim([0 6])
-    yticks([])
     title(subjects{subj})
+    grid on
     hold off
 end % Subject Loop
 
@@ -220,8 +220,8 @@ for pat = 1:length(patterns)
     xticks(1:2)
     xticklabels(["k0 Left", "k0 Right"])
     ylim([0 6])
-    yticks([])
     title(patterns_disp{pat})
+    grid on
     hold off
 end % Subject Loop
 
@@ -326,6 +326,8 @@ t.XLabel.FontWeight = 'bold';
 t.YLabel.String = "Number of Subjects";
 t.YLabel.FontSize = 16;
 t.YLabel.FontWeight = 'bold';
+t.TileSpacing = "tight";
+t.Padding = "tight";
 
 filename = fullfile(figDir,"k0_aff_Histograms");
 savefig(filename)
