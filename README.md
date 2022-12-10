@@ -43,7 +43,7 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
   - calculate the **variance-accounted-for** for each number of synergies
   - select the lowest number of synergies which account for >90% of the variance
   - write the synergies and VAF data to the `nmf.mat` structure
-3. run `Visualizations1.m`
+3. run `Visualization1.m`
   - visualize the lowpass filtered EMG data (look for large spikes)
   - visualize the observed activations vs the reconstructed activations (look for correspondance)
   - visualize the synergy activations and muscle weightings for each number of synergies (1-6)
@@ -68,7 +68,7 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
   - identical to `MovementData1.m` but with MRS sections removed
 5. run `nmf2.m`
  - identical to `nmf1.m` but with `calcReduced` sections removed
-6. run `Visualizations2.m`
+6. run `Visualizations.m`
 
 `Figures2.m` is a hard-coded script to generate the plots used in presentations
 
@@ -81,4 +81,4 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
 1. run `MovementData3.m`
   - Select the MRI-based model
 2. run `nmf1.m`
-3. run `Visualizations1.m`
+3. run `Visualization1.m`
