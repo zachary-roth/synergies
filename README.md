@@ -68,7 +68,7 @@ Children with Cerebral Palsy (CP) however are known to have reduced motor contro
   - identical to `MovementData1.m` but with MRS sections removed
 5. run `nmf2.m`
  - identical to `nmf1.m` but with `calcReduced` sections removed
-6. run `Visualizations.m`
+6. run `Visualization2.m`
 
 `Figures2.m` is a hard-coded script to generate the plots used in presentations
 
